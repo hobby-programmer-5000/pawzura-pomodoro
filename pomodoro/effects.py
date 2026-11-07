@@ -169,6 +169,10 @@ class ScreenCue(QWidget):
         if style == "banner":
             width = area.width() - 32
         self.panel.setFixedWidth(width)
+        # Refresh the hidden preview's layout before measuring newly visible
+        # buttons; otherwise its cached height can clip the waiting controls.
+        self.panel.layout().invalidate()
+        self.panel.layout().activate()
         self.panel.adjustSize()
         if style in ("bubble", "edge"):
             point = anchor - screen.geometry().topLeft()
