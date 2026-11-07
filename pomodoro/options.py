@@ -1,7 +1,12 @@
-from PySide6.QtCore import QSettings, QSignalBlocker, Qt
+from pathlib import Path
+import json
+import re
+import sys
+
+from PySide6.QtCore import QSettings, QSignalBlocker, Qt, QUrl
 from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QDialog, QFormLayout, QHBoxLayout, QLabel, QPushButton,
-    QSpinBox, QTabWidget, QVBoxLayout, QWidget,
+    QMessageBox, QSpinBox, QTabWidget, QTextBrowser, QVBoxLayout, QWidget,
 )
 
 from .effects import EVENTS, STYLES, retention_choices
@@ -105,6 +110,8 @@ class Options(QDialog):
         form = QFormLayout()
         general_layout.addLayout(form)
         self.fields = {}
+        self.durations = {}
+        self.licenses_dialog = None
 
         self.language = QComboBox()
         self.language.addItem("English", "en")
@@ -120,13 +127,29 @@ class Options(QDialog):
             spin.setValue(value)
             spin.setKeyboardTracking(False)
             spin.valueChanged.connect(callback)
-            self.add_field(form, key, spin)
+            self.durations[key] = spin
+            if key == "rest_minutes":
+                row = QWidget()
+                row_layout = QHBoxLayout(row)
+                row_layout.setContentsMargins(0, 0, 0, 0)
+                row_layout.addWidget(spin)
+                self.restore_durations = QPushButton("50 / 10")
+                self.restore_durations.setAutoDefault(False)
+                self.restore_durations.clicked.connect(controller.restore_durations)
+                row_layout.addWidget(self.restore_durations)
+                self.add_field(form, key, row)
+                self.fields[key].setBuddy(spin)
+            else:
+                self.add_field(form, key, spin)
         self.effects = QCheckBox()
         self.effects.clicked.connect(controller.set_effects)
         form.addRow(self.effects)
         self.walking = QCheckBox()
         self.walking.clicked.connect(controller.set_walking)
         form.addRow(self.walking)
+        self.startup = QCheckBox()
+        self.startup.clicked.connect(controller.set_startup)
+        form.addRow(self.startup)
         self.direction = QComboBox()
         self.direction.addItems(["", ""])
         self.direction.activated.connect(lambda index: controller.set_direction(("left", "right")[index]))
@@ -153,6 +176,10 @@ class Options(QDialog):
         self.close_button = QPushButton()
         self.close_button.clicked.connect(self.accept)
         buttons.addWidget(self.close_button)
+        self.licenses_button = QPushButton()
+        self.licenses_button.setAutoDefault(False)
+        self.licenses_button.clicked.connect(self.show_licenses)
+        buttons.insertWidget(buttons.count() - 1, self.licenses_button)
         for button in (self.toggle, self.reset, self.close_button):
             button.setAutoDefault(False)
 
@@ -167,11 +194,20 @@ class Options(QDialog):
         self.setWindowTitle(f"Pawzura Pomodoro · {text['options']}")
         for key, label in self.fields.items():
             label.setText(text[key])
+        for key, value in (("work_minutes", owner.timer.work), ("rest_minutes", owner.timer.rest)):
+            with QSignalBlocker(self.durations[key]):
+                self.durations[key].setValue(value)
+        self.restore_durations.setToolTip(text["restore_durations"])
+        self.restore_durations.setAccessibleName(text["restore_durations"])
         self.language.setCurrentIndex(self.language.findData(owner.language))
         self.effects.setText(text["effects"])
         self.effects.setChecked(owner.effects)
         self.walking.setText(text["walking"])
         self.walking.setChecked(owner.walking)
+        self.startup.setText(text["startup"])
+        self.startup.setEnabled(owner.startup is not None)
+        self.startup.setChecked(owner.startup_enabled())
+        self.startup.setToolTip(text["startup_help"] if owner.startup else text["startup_unavailable"])
         self.direction.setItemText(0, text["left"])
         self.direction.setItemText(1, text["right"])
         self.direction.setCurrentIndex(int(owner.direction == "right"))
@@ -180,10 +216,50 @@ class Options(QDialog):
         self.save_status.setVisible(owner.store.status() != QSettings.Status.NoError)
         self.reset.setText(text["reset"])
         self.close_button.setText(text["close"])
+        self.licenses_button.setText(text["licenses"])
         self.tabs.setTabText(0, text["general_tab"])
         self.tabs.setTabText(1, text["effects_tab"])
         self.effect_options.refresh()
         self.update_timer(owner.countdown(), owner.toggle_label())
+
+    def show_licenses(self):
+        from . import __version__
+        root = Path(__file__).resolve().parent.parent
+        if getattr(sys, "frozen", False):
+            beside_exe = Path(sys.executable).parent
+            root = beside_exe if (beside_exe / "THIRD-PARTY-NOTICES.md").is_file() else Path(sys._MEIPASS)
+        suffix = ".ko" if self.controller.language == "ko" else ""
+        path = root / f"THIRD-PARTY-NOTICES{suffix}.md"
+        if not path.is_file():
+            QMessageBox.warning(self, "Pawzura Pomodoro", self.controller.text["licenses_missing"])
+            return
+        if self.licenses_dialog:
+            self.licenses_dialog.close()
+        dialog = QDialog(self)
+        self.licenses_dialog = dialog
+        dialog.setWindowTitle(f"Pawzura Pomodoro {__version__} · {self.controller.text['licenses']}")
+        dialog.resize(640, 440)
+        layout = QVBoxLayout(dialog)
+        browser = QTextBrowser()
+        browser.setSearchPaths([str(root)])
+        browser.document().setBaseUrl(QUrl.fromLocalFile(str(root) + "/"))
+        browser.setOpenExternalLinks(True)
+        content = path.read_text("utf-8")
+        info = root / "BUILD-INFO.json"
+        try:
+            metadata = json.loads(info.read_text("utf-8")) if info.stat().st_size < 128000 else {}
+            commit = metadata.get("commit") if isinstance(metadata, dict) else None
+            if isinstance(commit, str) and re.fullmatch(r"[0-9a-f]{40}", commit):
+                url = "https://github.com/hobby-programmer-5000/pawzura-pomodoro/tree/" + commit
+                content = f"[{self.controller.text['build_source']}]({url})\n\n" + content
+        except (OSError, ValueError):
+            pass
+        browser.setMarkdown(content)
+        layout.addWidget(browser)
+        button = QPushButton(self.controller.text["close"])
+        button.clicked.connect(dialog.accept)
+        layout.addWidget(button)
+        dialog.show()
 
     def update_timer(self, countdown, action):
         self.status.setText(countdown)

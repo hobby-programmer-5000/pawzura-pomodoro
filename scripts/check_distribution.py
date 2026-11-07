@@ -23,6 +23,56 @@ def normalized(code):
         normalized(value) if isinstance(value, types.CodeType) else value for value in code.co_consts))
 
 
+def check_code(executable, info):
+    from PyInstaller.archive.readers import CArchiveReader
+    archive = CArchiveReader(str(executable))
+    pyz = archive.open_embedded_archive("PYZ.pyz")
+    for rel, expected_hash in info["source_sha256"].items():
+        if digest(ROOT / rel) != expected_hash:
+            raise ValueError(f"Build source changed: {rel}")
+        if not rel.startswith("pomodoro/") or not rel.endswith(".py"):
+            continue
+        if rel == "pomodoro/__main__.py" or rel.startswith("pomodoro/tools/"):
+            continue
+        parts = Path(rel).with_suffix("").parts
+        module = ".".join(parts[:-1] if parts[-1] == "__init__" else parts)
+        actual = pyz.extract(module)
+        expected = compile((ROOT / rel).read_bytes(), rel, "exec", optimize=0)
+        if normalized(actual) != normalized(expected):
+            raise ValueError(f"Embedded source mismatch: {module}")
+    main = marshal.loads(archive.extract("run"))
+    if normalized(main) != normalized(compile((ROOT / "run.py").read_bytes(), "run.py", "exec")):
+        raise ValueError("Embedded entry point mismatch")
+    return archive
+
+
+def check_single(executable):
+    from PyInstaller.archive.readers import CArchiveReader
+    archive = CArchiveReader(str(executable))
+    info = json.loads(archive.extract("BUILD-INFO.json"))
+    if info["mode"] != "onefile/dynamic Qt, temporary extraction":
+        raise ValueError("Wrong standalone build mode")
+    manifest = json.loads(archive.extract("PAYLOAD-MANIFEST.json"))
+    names = {name.replace("\\", "/"): name for name in archive.toc}
+    if len(names) != len(archive.toc):
+        raise ValueError("Duplicate normalized archive paths")
+    for name in names:
+        if Path(name).suffix.lower() in {".ini", ".lock", ".log"}:
+            raise ValueError(f"Private settings in archive: {name}")
+    for name, expected in manifest.items():
+        path = Path(name)
+        if path.is_absolute() or ".." in path.parts or ":" in name or path.suffix.lower() in {".ini", ".lock", ".log"}:
+            raise ValueError(f"Unsafe/private single-file payload: {name}")
+        if name not in names or hashlib.sha256(archive.extract(names[name])).hexdigest() != expected:
+            raise ValueError(f"Single-file payload mismatch: {name}")
+    for name in ("THIRD-PARTY-NOTICES.md", "THIRD-PARTY-NOTICES.ko.md", "licenses/SOURCES.json", "licenses/installed/CPython-LICENSE.txt"):
+        if name not in manifest:
+            raise ValueError(f"Missing embedded notice: {name}")
+    check_code(executable, info)
+    return {"status": "PASS", "version": info["version"], "commit": info["commit"],
+            "payload_files": len(manifest), "embedded_source_checked": True}
+
+
 def check(folder, *, embedded=False):
     folder = Path(folder).resolve()
     info = json.loads((folder / "BUILD-INFO.json").read_text("utf-8"))
@@ -66,26 +116,7 @@ def check(folder, *, embedded=False):
         if actual != expected:
             raise ValueError("Distribution file manifest mismatch")
     if embedded:
-        from PyInstaller.archive.readers import CArchiveReader
-        archive = CArchiveReader(str(folder / "PawzuraPomodoro.exe"))
-        pyz = archive.open_embedded_archive("PYZ.pyz")
-        for rel in info["source_sha256"]:
-            if not rel.startswith("pomodoro/") or not rel.endswith(".py"):
-                continue
-            # Source provenance also records the `python -m` wrapper and demo
-            # authoring tools. The frozen app enters through run.py and never
-            # imports these development-only files.
-            if rel == "pomodoro/__main__.py" or rel.startswith("pomodoro/tools/"):
-                continue
-            parts = Path(rel).with_suffix("").parts
-            module = ".".join(parts[:-1] if parts[-1] == "__init__" else parts)
-            actual = pyz.extract(module)
-            expected = compile((ROOT / rel).read_bytes(), rel, "exec", optimize=0)
-            if normalized(actual) != normalized(expected):
-                raise ValueError(f"Embedded source mismatch: {module}")
-        main = marshal.loads(archive.extract("run"))
-        if normalized(main) != normalized(compile((ROOT / "run.py").read_bytes(), "run.py", "exec")):
-            raise ValueError("Embedded entry point mismatch")
+        check_code(folder / "PawzuraPomodoro.exe", info)
     return {"status": "PASS", "files": len(paths), "version": info["version"],
             "commit": info["commit"], "embedded_source_checked": embedded}
 
@@ -94,5 +125,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("folder", type=Path)
     parser.add_argument("--embedded", action="store_true")
+    parser.add_argument("--single-exe", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(check(args.folder, embedded=args.embedded), indent=2))
+    print(json.dumps(check_single(args.folder) if args.single_exe else check(args.folder, embedded=args.embedded), indent=2))

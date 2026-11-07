@@ -9,18 +9,20 @@ from PySide6.QtWidgets import (
 
 from .effects import EVENTS, Effect, ScreenCues
 from .options import Options
+from .settings import create_settings
 from .surfaces import TimerPet, draw_tomato
 from .text import TEXT
-from .timer import MAX_MINUTES, PomodoroTimer
+from .timer import DEFAULT_REST_MINUTES, DEFAULT_WORK_MINUTES, MAX_MINUTES, PomodoroTimer
 
 
 TITLE = "Pawzura Pomodoro"
 
 
 class Companion:
-    def __init__(self, app, store, clock=None, show_tray=True):
+    def __init__(self, app, store, clock=None, show_tray=True, startup=None):
         self.app = app
         self.store = store
+        self.startup = startup
         self.language = self.read_language(store)
         self.effects = store.value("effects", True, type=bool)
         self.cue_settings = {event: Effect.load(store, event) for event in EVENTS}
@@ -32,8 +34,8 @@ class Companion:
         self.remind_at = None
         self.walking = store.value("walking", True, type=bool)
         self.direction = "left" if store.value("direction") == "left" else "right"
-        work = self.read_minutes("work", 50)
-        rest = self.read_minutes("rest", 10)
+        work = self.read_minutes("work", DEFAULT_WORK_MINUTES)
+        rest = self.read_minutes("rest", DEFAULT_REST_MINUTES)
         self.timer = PomodoroTimer(work, rest) if clock is None else PomodoroTimer(work, rest, clock)
         self.cues = ScreenCues(app)
         self.cues.action_requested.connect(self.cue_action)
@@ -265,6 +267,26 @@ class Companion:
         self.timer.rest = minutes
         self.save(rest=minutes)
 
+    def restore_durations(self):
+        self.timer.work, self.timer.rest = DEFAULT_WORK_MINUTES, DEFAULT_REST_MINUTES
+        self.save(work=DEFAULT_WORK_MINUTES, rest=DEFAULT_REST_MINUTES)
+
+    def startup_enabled(self):
+        try:
+            return self.startup is not None and self.startup.enabled()
+        except (OSError, ValueError):
+            return False
+
+    def set_startup(self, enabled):
+        if self.startup is None:
+            return
+        try:
+            self.startup.set_enabled(enabled)
+        except (OSError, ValueError):
+            QMessageBox.warning(self.options, TITLE, self.text["startup_error"])
+        if self.options:
+            self.options.refresh()
+
     def set_effects(self, enabled):
         self.effects = enabled
         if not enabled:
@@ -315,6 +337,8 @@ class Companion:
             self.show_options()
 
     def shutdown(self):
+        if self.options and self.options.licenses_dialog:
+            self.options.licenses_dialog.close()
         self.poll.stop()
         self.remind_at = None
         self.cues.dispose()
@@ -329,14 +353,12 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(description=TITLE)
     parser.add_argument("--settings-file", type=Path, help="Use an explicit INI profile for isolated testing")
+    parser.add_argument("--startup", action="store_true", help="Quietly ignore a second login-start instance")
     args, qt_args = parser.parse_known_args(sys.argv[1:])
     app = QApplication([sys.argv[0], *qt_args])
     app.setApplicationName(TITLE)
     app.setQuitOnLastWindowClosed(False)
-    store = (QSettings(str(args.settings_file.resolve()), QSettings.Format.IniFormat)
-             if args.settings_file else
-             QSettings(QSettings.Format.IniFormat, QSettings.Scope.UserScope, "Pawzura", "Pomodoro"))
-    store.setFallbacksEnabled(False)
+    store = create_settings(args.settings_file)
     text = TEXT[Companion.read_language(store)]
     folder = Path(store.fileName()).parent
     try:
@@ -347,9 +369,15 @@ def main():
     lock = QLockFile(str(folder / "pomodoro.lock"))
     lock.setStaleLockTime(0)
     if not lock.tryLock(0):
+        if args.startup and lock.error() == QLockFile.LockError.LockFailedError:
+            return 0
         key = "already_open" if lock.error() == QLockFile.LockError.LockFailedError else "storage_error"
         QMessageBox.information(None, TITLE, text[key])
         return 1
-    companion = Companion(app, store)
+    startup = None
+    if sys.platform == "win32" and getattr(sys, "frozen", False) and args.settings_file is None:
+        from .startup import Startup
+        startup = Startup(sys.executable)
+    companion = Companion(app, store, startup=startup)
     app.setWindowIcon(companion.tray.icon())
     return app.exec()

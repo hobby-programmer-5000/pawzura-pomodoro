@@ -3,10 +3,12 @@ from time import monotonic
 
 
 MAX_MINUTES = 180
+DEFAULT_WORK_MINUTES = 50
+DEFAULT_REST_MINUTES = 10
 
 
 class PomodoroTimer:
-    def __init__(self, work=50, rest=10, clock=monotonic):
+    def __init__(self, work=DEFAULT_WORK_MINUTES, rest=DEFAULT_REST_MINUTES, clock=monotonic):
         self.work = work
         self.rest = rest
         self.clock = clock

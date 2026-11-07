@@ -1,2 +1,6 @@
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
 # Preserve reviewed upstream notices byte for byte, including their whitespace.
 licenses/upstream/** -text -whitespace
