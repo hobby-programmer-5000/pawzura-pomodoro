@@ -8,7 +8,7 @@ import tempfile
 import traceback
 from uuid import uuid4
 
-from PySide6.QtCore import QSettings
+from PySide6.QtCore import QSettings, Qt
 from PySide6.QtWidgets import QApplication, QStyle, QStyleOptionButton
 
 from . import __version__
@@ -59,6 +59,17 @@ def check(render_dir=None):
 
         startup = Startup(sys.executable, MemoryRunKey())
         owner = Companion(app, store, lambda: now[0], show_tray=False, startup=startup)
+        # This diagnostic drives widget actions directly, not OS pointer input.
+        # Let real desktop clicks pass through its temporary test surfaces.
+        owner.pet.setWindowFlag(Qt.WindowType.WindowTransparentForInput, True)
+        owner.pet.show()
+
+        def settle():
+            for window in owner.cues.windows.values():
+                if window.isVisible():
+                    window.setWindowFlag(Qt.WindowType.WindowTransparentForInput, True)
+                    window.show()
+            app.processEvents()
         require((owner.language, owner.timer.work, owner.timer.rest) == ("en", 50, 10), "Fresh defaults")
         require(owner.walking and owner.effects and owner.timer.phase == "ready", "Fresh controls")
         require(owner.cue_settings["waiting"].style == "dim", "Default waiting cue")
@@ -89,10 +100,10 @@ def check(render_dir=None):
             owner.set_effects(False)
             owner.preview_effect("work")
             owner.cues.animation.setCurrentTime(1000)
-            app.processEvents()
+            settle()
             owner.set_effects(True)
             owner.cues.animation.setCurrentTime(220)
-            app.processEvents()
+            settle()
             require(set(owner.cues.windows) == set(app.screens()), "All screens")
             for index, window in enumerate(owner.cues.windows.values()):
                 require(window.isVisible(), "Waiting window visible")
@@ -109,10 +120,12 @@ def check(render_dir=None):
                 owner.set_cue("waiting", style, "click", 2, True)
                 owner.preview_effect("waiting")
                 owner.cues.animation.setCurrentTime(220)
-                app.processEvents()
+                settle()
                 for screen, window in owner.cues.windows.items():
                     require(window.geometry() == screen.geometry(), "Screen geometry")
-                    require(window.buttons["dismiss"].isVisible() and not window.buttons["start"].isVisible(), "Safe preview")
+                    require(window.buttons["dismiss"].isVisible() and not window.buttons["start"].isVisible(),
+                            f"Safe preview {language}/{style}: phase={owner.cues.phase}, preview={owner.cues.preview}, "
+                            f"dismiss={window.buttons['dismiss'].isVisible()}, start={window.buttons['start'].isVisible()}")
                 require(owner.timer.phase == "waiting", "Preview does not start work")
             owner.dismiss_effect()
             owner.show_cue("waiting")
@@ -123,7 +136,9 @@ def check(render_dir=None):
             old_start()
             require(owner.timer.phase == "ready", "Stale action rejected")
             owner.show_options()
-            app.processEvents()
+            owner.options.setWindowFlag(Qt.WindowType.WindowTransparentForInput, True)
+            owner.options.show()
+            settle()
             require(owner.options.isVisible(), "Options visible")
             require(not owner.options.startup.isChecked(), "Startup defaults off")
             owner.options.startup.click()
@@ -138,6 +153,9 @@ def check(render_dir=None):
             if render_dir:
                 require(owner.options.grab().save(str(render_dir / f"options-{language}.png")), "Options render")
             owner.options.licenses_button.click()
+            if owner.options.licenses_dialog:
+                owner.options.licenses_dialog.setWindowFlag(Qt.WindowType.WindowTransparentForInput, True)
+                owner.options.licenses_dialog.show()
             app.processEvents()
             require(owner.options.licenses_dialog and owner.options.licenses_dialog.isVisible(), "License notices available")
             owner.options.licenses_dialog.close()

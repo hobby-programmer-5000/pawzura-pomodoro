@@ -23,3 +23,5 @@ The portable ZIP includes reviewed upstream license/attribution texts and instal
 The app and Pawzura source remain MIT. No model weights, FFmpeg executable, Windows font files or unrelated Pawzura profiles/assets are distributed. FFmpeg/fonts were used only to author the existing raster/video demo. Qt modules selected by the build are checked against the recorded runtime and retained notices; this record is not a blanket legal clearance for other modules or future versions. See [build and library replacement](BUILD.md) for corresponding source archives and LGPL rights.
 
 Design influences are recorded in [References and inspiration](INSPIRATION.md).
+
+The separate standalone EXE embeds the same dynamic runtime and notices and extracts them temporarily. Its LGPL compliance route supplies corresponding application code/build scripts and exact library source archives for recombination, as detailed in [BUILD](BUILD.md); the onedir ZIP continues to offer direct compatible-DLL replacement. **Options > Licenses** exposes notices and the exact build source in both formats. Original code/artwork remain MIT.

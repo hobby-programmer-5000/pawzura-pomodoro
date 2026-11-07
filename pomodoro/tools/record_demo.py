@@ -5,11 +5,14 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import time
+
+from pomodoro import __version__
 
 
 FPS = 12
-SECONDS = 22
+SECONDS = 30
 WIDTH, HEIGHT = 1280, 800
 
 CAPTIONS = {
@@ -19,10 +22,12 @@ CAPTIONS = {
         "display": "Display",
         "desktop": "Demo desktop",
         "focus": ("A little company while you focus", "50 minutes of work, then a 10-minute break."),
+        "general": ("Choose your timing and Windows startup", "Fresh defaults: 50 minutes of work, 10 minutes of rest. Startup is optional."),
         "settings": ("Choose how you want to be reminded", "Edge glow · Companion bubble · Top banner · Dim screen · Cover screen"),
         "break": ("A break starts when work ends", "The reminder appears on both displays."),
         "waiting": ("A reminder that waits for you", "The screen stays covered until you respond."),
         "restart": ("Click Start work on either display", "Both screens clear. A fresh 50-minute session begins."),
+        "packages": ("Choose the ZIP or a standalone EXE", "Both formats run without installing Python."),
     },
     "ko": {
         "subtitle": "작업과 휴식을 함께하는 작은 컴패니언",
@@ -30,10 +35,12 @@ CAPTIONS = {
         "display": "모니터",
         "desktop": "예제 바탕 화면",
         "focus": ("집중하는 동안 토마토가 함께해요", "작업 50분, 그리고 휴식 10분."),
+        "general": ("작업·휴식 시간과 자동 시작을 설정해요", "새 기본값은 작업 50분·휴식 10분이에요. Windows 자동 시작은 선택할 수 있어요."),
         "settings": ("알림을 원하는 모양으로 골라보세요", "테두리 빛 · 말풍선 · 상단 배너 · 반투명 덮개 · 전체 가림"),
         "break": ("작업이 끝나면 휴식이 시작돼요", "두 모니터에 함께 알려줘요."),
         "waiting": ("응답할 때까지 기다리는 알림", "휴식이 끝나면 화면을 가린 채로 기다려요."),
         "restart": ("어느 모니터에서든 작업 시작을 눌러요", "모든 화면이 열리고, 새로운 50분이 시작돼요."),
+        "packages": ("ZIP과 단일 EXE 중에서 선택해요", "두 배포본 모두 Python 설치 없이 실행할 수 있어요."),
     },
 }
 
@@ -54,6 +61,7 @@ def render(language, output, work, ffmpeg):
     from PySide6.QtTest import QTest
     from PySide6.QtWidgets import QApplication
     from pomodoro.app import Companion
+    from pomodoro.startup import Startup
 
     class Clock:
         now = 0.0
@@ -73,7 +81,23 @@ def render(language, output, work, ffmpeg):
         raise RuntimeError(f"The demo needs the installed Windows font {family}.")
     app.setFont(QFont(family, 9))
     clock = Clock()
-    owner = Companion(app, QSettings(str(work / "demo.ini"), QSettings.Format.IniFormat), clock, show_tray=False)
+    class MemoryRunKey:
+        value = None
+
+        def read(self):
+            return self.value
+
+        def write(self, command):
+            self.value = command
+
+        def delete(self):
+            self.value = None
+
+    registry = MemoryRunKey()
+    startup = Startup(sys.executable, registry)
+    owner = Companion(app, QSettings(str(work / "demo.ini"), QSettings.Format.IniFormat), clock,
+                      show_tray=False, startup=startup)
+    assert (owner.timer.work, owner.timer.rest) == (50, 10) and registry.value is None
     owner.set_language(language)
     owner.poll.stop()
     owner.pet.timer.stop()
@@ -107,13 +131,15 @@ def render(language, output, work, ffmpeg):
     def caption(frame):
         if frame < 36:
             return text["focus"]
-        if frame < 114:
+        if frame < 90:
+            return text["general"]
+        if frame < 162:
             return text["settings"]
-        if frame < 156:
+        if frame < 204:
             return text["break"]
-        if frame < 216:
+        if frame < 264:
             return text["waiting"]
-        return text["restart"]
+        return text["restart"] if frame < 312 else text["packages"]
 
     def draw_cursor(painter, frame):
         for screen, target in zip(screens, targets):
@@ -193,44 +219,56 @@ def render(language, output, work, ffmpeg):
                 app.sendEvent(owner.pet, event)
                 assert owner.pet.menu.isVisible()
             elif frame == 42:
-                action = owner.actions["effects_options"]
+                action = owner.actions["options"]
                 owner.pet.menu.setActiveAction(action)
                 click(owner.pet.menu, frame, owner.pet.menu.actionGeometry(action).center())
                 assert owner.options.isVisible()
                 owner.options.move(185, 30)
-            elif frame in (48, 76, 99):
+                assert owner.options.durations["work_minutes"].value() == 50
+                assert owner.options.durations["rest_minutes"].value() == 10
+                assert not owner.options.startup.isChecked()
+            elif frame in (60, 78):
+                checkbox = owner.options.startup
+                click(checkbox, frame, QPoint(8, checkbox.height() // 2))
+                assert checkbox.isChecked() == (frame == 60)
+                assert bool(registry.value) == (frame == 60)
+            elif frame == 90:
+                tabs = owner.options.tabs.tabBar()
+                click(tabs, frame, tabs.tabRect(1).center())
+                assert owner.options.tabs.currentIndex() == 1
+            elif frame in (96, 124, 147):
                 click(owner.options.effect_options.style, frame)
-            elif frame in (54, 80, 103):
-                choose_style({54: "bubble", 80: "banner", 103: "cover"}[frame], frame)
-            elif frame in (58, 83):
+            elif frame in (102, 128, 151):
+                choose_style({102: "bubble", 128: "banner", 151: "cover"}[frame], frame)
+            elif frame in (106, 132):
                 click(owner.options.effect_options.preview, frame)
                 assert owner.cues.preview
-            elif frame in (72, 96):
+            elif frame in (120, 144):
                 click(owner.cues.windows[screens[0]].buttons["dismiss"], frame)
                 assert owner.cues.phase is None and owner.timer.phase == "work"
-            elif frame == 106:
+            elif frame == 154:
                 click(owner.options.close_button, frame)
                 assert owner.cue_settings["waiting"].style == "cover"
-            elif frame == 114:
+            elif frame == 162:
                 clock.now = owner.timer.deadline
                 owner.tick()
                 assert owner.timer.phase == "break"
-            elif frame == 156:
+            elif frame == 204:
                 clock.now = owner.timer.deadline
                 owner.tick()
                 assert owner.timer.phase == "waiting" and owner.timer.deadline is None
-            elif frame == 216:
+            elif frame == 264:
                 click(owner.cues.windows[screens[1]].buttons["start"], frame)
                 assert owner.timer.phase == "work" and owner.timer.seconds == 3000
                 assert owner.cues.phase == "work" and owner.cues.effect.style == "edge"
-            if 156 <= frame < 216:
+            if 204 <= frame < 264:
                 assert owner.timer.phase == "waiting" and owner.timer.deadline is None
-            if frame == 198:
+            if frame == 246:
                 pointer_before_start = QPointF(pointer["point"])
-            if 198 <= frame < 216:
+            if 246 <= frame < 264:
                 button = owner.cues.windows[screens[1]].buttons["start"]
                 target = QPointF(button.mapToGlobal(button.rect().center()))
-                progress = (frame - 198) / 18
+                progress = (frame - 246) / 18
                 eased = progress * progress * (3 - 2 * progress)
                 pointer["point"] = pointer_before_start + (target - pointer_before_start) * eased
             if owner.cues.phase:
@@ -275,6 +313,7 @@ def render(language, output, work, ffmpeg):
             painter.end()
             assert image.save(str(frames / f"frame-{frame:04}.png"))
         assert owner.timer.phase == "work" and owner.cues.phase is None
+        assert registry.value is None
     finally:
         if owner.options:
             owner.options.close()
@@ -282,21 +321,27 @@ def render(language, output, work, ffmpeg):
         app.aboutToQuit.disconnect(owner.shutdown)
         app.processEvents()
 
-    prefix = output / f"pomodoro-demo-{language}"
+    prefix = output / f"pomodoro-demo-{__version__}-{language}"
+    # A dotted version is part of the basename, not a suffix to replace.
+    mp4 = output / (prefix.name + ".mp4")
+    gif = output / (prefix.name + ".gif")
+    if mp4.exists() or gif.exists():
+        raise FileExistsError("Demo outputs must be new files")
     source = str(frames / "frame-%04d.png")
     commands = [
-        [ffmpeg, "-hide_banner", "-loglevel", "warning", "-framerate", str(FPS), "-i", source,
+        [ffmpeg, "-hide_banner", "-nostdin", "-n", "-loglevel", "warning", "-framerate", str(FPS), "-i", source,
          "-c:v", "libx264", "-crf", "20", "-preset", "medium", "-pix_fmt", "yuv420p",
-         "-movflags", "+faststart", str(prefix.with_suffix(".mp4"))],
-        [ffmpeg, "-hide_banner", "-loglevel", "warning", "-framerate", str(FPS), "-i", source,
+         "-movflags", "+faststart", str(mp4)],
+        [ffmpeg, "-hide_banner", "-nostdin", "-n", "-loglevel", "warning", "-framerate", str(FPS), "-i", source,
          "-filter_complex", "[0:v]split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle",
-         "-loop", "0", str(prefix.with_suffix(".gif"))],
+         "-loop", "0", str(gif)],
     ]
     for index, command in enumerate(commands):
         with (work / f"encode-{index}.log").open("w", encoding="utf-8") as log:
             subprocess.run(command, check=True, stdout=log, stderr=log)
-    print(json.dumps({"language": language, "frames": FPS * SECONDS, "seconds": SECONDS,
-                      "outputs": [prefix.with_suffix(suffix).name for suffix in (".gif", ".mp4")]}))
+    print(json.dumps({"language": language, "version": __version__, "defaults": [50, 10],
+                      "startup_backend": "memory only, no Windows registration", "frames": FPS * SECONDS, "seconds": SECONDS,
+                      "outputs": [gif.name, mp4.name]}))
 
 
 def main():
@@ -310,7 +355,7 @@ def main():
         parser.error("Install FFmpeg and add it to PATH to encode the demo.")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     for suffix in (".gif", ".mp4"):
-        if (args.output_dir / f"pomodoro-demo-{args.language}{suffix}").exists():
+        if (args.output_dir / f"pomodoro-demo-{__version__}-{args.language}{suffix}").exists():
             parser.error("Choose a fresh output folder to preserve earlier demo assets.")
     render(args.language, args.output_dir.resolve(), args.work_dir.resolve(), ffmpeg)
 
