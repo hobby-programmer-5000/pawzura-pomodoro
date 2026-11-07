@@ -4,6 +4,14 @@
 
 화면을 걸어 다니는 컴패니언이 있는 무음 Windows 타이머예요. 기본값은 작업 50분, 휴식 10분이에요.
 
+## 만든 이유
+
+작업에 몰두하다 보면 중간에 쉴 생각을 못 할 때가 있어요. 스마트폰에 포모도로 앱을 켜 놓아도 작업 중에는 폰이 눈에 잘 들어오지 않아요. 시간을 확인하려고 폰을 들었다가 오히려 폰으로 시간을 낭비하게 되기도 하고요.
+
+그래서 지금 보고 있는 컴퓨터 화면에 휴식할 시간이라는 표시가 크고 분명하게 나타나면 좋겠다고 생각했어요. 쉬어야 할 때를 놓치지 않도록 눈에 띄는 시각적 알림을 만들고 싶어서 Pawzura 포모도로를 만들었어요.
+
+[Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases)에서 Windows x64 포터블 ZIP을 받아 폴더 전체를 푼 뒤 **PawzuraPomodoro.exe**를 실행하세요. 포터블 빌드에는 Python 설치가 필요 없어요. [빌드·검증·삭제 안내](BUILD.ko.md).
+
 [Windows 11 수동 테스트 시나리오](TESTING.ko.md).
 
 ![컴패니언 걷기, 알림 설정, 클릭해서 작업을 시작하는 화면 데모](media/pomodoro-demo-ko.gif)
@@ -31,4 +39,4 @@
 
 Pawzura 이동 코드는 [커밋 23bd3b9](https://github.com/hobby-programmer-5000/pawzura/blob/23bd3b90435d6e5ab6c0dd510d8dc5b8897489a6/pawzura/pet.py)과 requirements.txt의 압축 파일 SHA256에 고정돼 있어요. 공개 소스 압축 파일에서 패키지를 설치해요.
 
-개발 검사는 `python -m unittest discover -s tests -v`로 실행해요. Windows 11 수동 검증은 진행 예정이에요. 제품 소유와 AI 구현 역할은 [기여자](CONTRIBUTORS.ko.md)에 기록했어요.
+개발 검사는 `python -m unittest discover -s tests -v`로 실행해요. Windows 11 검사 결과와 방법, 남은 범위는 [테스트 결과](RESULTS.ko.md)에 기록했어요. 제품 소유와 AI 구현 역할은 [기여자](CONTRIBUTORS.ko.md)에 기록했어요.

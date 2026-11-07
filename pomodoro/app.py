@@ -323,10 +323,19 @@ class Companion:
 
 
 def main():
-    app = QApplication(sys.argv)
+    if "--smoke-check" in sys.argv[1:]:
+        from .smoke import main as smoke_main
+        return smoke_main(sys.argv[1:])
+    import argparse
+    parser = argparse.ArgumentParser(description=TITLE)
+    parser.add_argument("--settings-file", type=Path, help="Use an explicit INI profile for isolated testing")
+    args, qt_args = parser.parse_known_args(sys.argv[1:])
+    app = QApplication([sys.argv[0], *qt_args])
     app.setApplicationName(TITLE)
     app.setQuitOnLastWindowClosed(False)
-    store = QSettings(QSettings.Format.IniFormat, QSettings.Scope.UserScope, "Pawzura", "Pomodoro")
+    store = (QSettings(str(args.settings_file.resolve()), QSettings.Format.IniFormat)
+             if args.settings_file else
+             QSettings(QSettings.Format.IniFormat, QSettings.Scope.UserScope, "Pawzura", "Pomodoro"))
     store.setFallbacksEnabled(False)
     text = TEXT[Companion.read_language(store)]
     folder = Path(store.fileName()).parent
