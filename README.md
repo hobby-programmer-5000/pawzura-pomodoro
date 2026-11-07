@@ -4,6 +4,14 @@
 
 A silent Windows desktop timer with a walking companion. It starts with 50 minutes of work and a 10-minute break.
 
+## Why I made this
+
+When I get absorbed in work, I sometimes forget to take a break. Even with a Pomodoro timer running on my phone, I may not notice it because the phone is out of sight. And when I do pick it up to check the timer, I can end up wasting time on the phone.
+
+I made Pawzura Pomodoro because I wanted a large, clear visual reminder on the screen I am already using, so I can notice when it is time to rest.
+
+Download the Windows x64 portable ZIP from [Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases), extract the entire folder and open **PawzuraPomodoro.exe**. Python is not needed for the portable build. [Build, verification and removal](BUILD.md).
+
 [Windows 11 manual test scenarios](TESTING.md).
 
 ![Demo of the walking companion, reminder settings and click-to-start cover](media/pomodoro-demo-en.gif)
@@ -31,4 +39,4 @@ The original tomato drawing and timer code use the repository's [MIT license](LI
 
 The Pawzura movement dependency is pinned to [commit 23bd3b9](https://github.com/hobby-programmer-5000/pawzura/blob/23bd3b90435d6e5ab6c0dd510d8dc5b8897489a6/pawzura/pet.py) and an archive SHA256 in requirements.txt. The package is installed from its public source archive.
 
-Development checks use `python -m unittest discover -s tests -v`. Windows 11 manual verification is pending. Product ownership and AI implementation roles are recorded in [Contributors](CONTRIBUTORS.md).
+Development checks use `python -m unittest discover -s tests -v`. Windows 11 testing results, methods and remaining coverage are recorded in [Test results](RESULTS.md). Product ownership and AI implementation roles are recorded in [Contributors](CONTRIBUTORS.md).

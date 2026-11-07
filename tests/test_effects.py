@@ -6,7 +6,7 @@ from uuid import uuid4
 
 from PySide6.QtCore import QPoint, QSettings, Qt
 from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QStyle, QStyleOptionButton
 
 from pomodoro.app import Companion
 from pomodoro.effects import DEFAULTS, EVENTS, STYLES, Effect
@@ -54,6 +54,32 @@ class EffectTests(unittest.TestCase):
 
     def first_window(self):
         return next(iter(self.owner.cues.windows.values()))
+
+    def test_first_waiting_buttons_fit_after_timed_preview(self):
+        owner = self.owner
+        owner.set_language("ko")
+        owner.set_cue("work", "edge", "timed", 1, True)
+        owner.set_cue("waiting", "edge", "click", 2, True)
+        owner.set_effects(False)
+        self.finish_break()
+        owner.preview_effect("work")
+        owner.cues.animation.setCurrentTime(1000)
+        self.app.processEvents()
+        owner.set_effects(True)
+        owner.cues.animation.setCurrentTime(220)
+        self.app.processEvents()
+        for window in owner.cues.windows.values():
+            for name, button in window.buttons.items():
+                with self.subTest(button=name):
+                    self.assertTrue(button.isVisible())
+                    option = QStyleOptionButton()
+                    option.initFrom(button)
+                    option.rect = button.rect()
+                    contents = button.style().subElementRect(
+                        QStyle.SubElement.SE_PushButtonContents, option, button,
+                    )
+                    self.assertGreaterEqual(contents.height(), button.fontMetrics().height())
+                    self.assertGreaterEqual(button.height(), button.sizeHint().height())
 
     def test_waiting_needs_confirmation_and_rejects_old_callbacks(self):
         self.finish_break()

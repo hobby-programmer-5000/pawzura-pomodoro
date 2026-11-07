@@ -1,4 +1,2 @@
-* text=auto eol=lf
-*.bat text eol=crlf
-*.gif binary
-*.mp4 binary
+# Preserve reviewed upstream notices byte for byte, including their whitespace.
+licenses/upstream/** -text -whitespace
