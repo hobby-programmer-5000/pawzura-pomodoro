@@ -1,0 +1,2 @@
+PySide6-Essentials==6.12.0
+pawzura @ https://github.com/hobby-programmer-5000/pawzura/archive/23bd3b90435d6e5ab6c0dd510d8dc5b8897489a6.zip#sha256=be1cc935372e207202f3a11984961c19a15be9a1bd61f34956a6462bf28946b5

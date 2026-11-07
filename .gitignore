@@ -1,0 +1,20 @@
+# Local environments, caches and settings
+.venv*/
+.cache/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.env
+.env.*
+*.ini
+*.log
+*.lock
+settings.json
+settings.tmp
+pairing.json
+# Local captures and test results
+artifacts/
+screenshots/
+test-results/
