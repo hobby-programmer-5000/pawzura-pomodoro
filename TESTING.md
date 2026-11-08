@@ -208,3 +208,17 @@ Every scenario ID and variation has a status and evidence or a reason it could n
 Mark a scenario PASS after all the states, input values and routes listed in that row have been checked. Record the language and screen configuration used for each run.
 
 Test results apply to the recorded source hashes and environment. A later fix invalidates affected checks and should be rerun on that changed snapshot.
+
+## Alpha 3 posture cases (A3)
+
+Run both languages with disposable settings and effects on/off. Record exact version, display arrangement and results separately from historical alpha-1/2 evidence.
+
+| ID | Procedure and acceptance |
+| --- | --- |
+| A3-01 | Reach break while walking: stop at the same position, animate sitting down, then close eyes. No autonomous walk/hop during rest or paused rest. |
+| A3-02 | Reach waiting, dismiss/snooze/preview reminders: remain seated with eyes open; no work starts until confirmed. |
+| A3-03 | Start work from badge or reminder: stand in place before walking resumes; a pinned companion remains pinned. |
+| A3-04 | Reset during sitting/rising, then change phase rapidly: continuous posture, no stale completion or jump. |
+| A3-05 | Drag while seated, recover home, change monitor geometry: remain reachable and seated; dragging still saves pinning. Test negative origins/mixed DPI on suitable hardware. |
+| A3-06 | Open Options > Licenses in both EXEs: both drawings use MIT and the component notices/source link remain accessible; defaults 50/10, startup off. |
+| A3-07 | In both languages choose Classic/Mint apron under General > Character during ready, work, rest and waiting. The picture, tray and reminder skin update immediately; phase/deadline/posture/pinning stay intact. Restart preserves the choice. Unknown stored choices safely fall back to Mint apron. There is no license explanation below the character picker; the separate Licenses button still opens component notices. |

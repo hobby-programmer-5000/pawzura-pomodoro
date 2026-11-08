@@ -2,23 +2,19 @@
 
 # Screen demos
 
-The English and Korean GIF/MP4 demos are 30 seconds, 1280 × 800 pixels, and 12 frames per second. The alpha-2 recordings demonstrate walking, 50/10 General options, optional Windows startup, reminder settings, bubble/banner previews, a break, a persistent cover, and starting a full work interval from the second display. The final caption identifies ZIP and standalone EXE choices.
+English/Korean GIF and MP4 are each 36 seconds, 1280 × 800, 12 fps (432 frames). They show saved Classic/Mint apron selection, 50/10 defaults, optional startup, reminder controls, sit/sleep/wait and standing before walking. Character selection has no license explanation underneath; the separate Licenses button remains available.
 
-Frames are captured from the app's actual Qt widgets and composed over two synthetic desktops. Settings are temporary. The clock is shortened and a cursor indicator is added for clarity. The display arrangement illustrates the app's multi-monitor behavior. Native verification results are recorded separately in the project checkpoints.
+Actual Qt widgets are captured on two synthetic desktops with disposable settings, an accelerated countdown and independent continuous pose clock. The enlarged companion is the same widget. Startup uses an in-memory backend and never changes this machine's Run entry. These recordings are not live desktop/hardware tests.
 
-The paired project READMEs embed the GIFs and link the MP4s. GitHub supports displaying GIF images. [GitHub image documentation](https://docs.github.com/en/repositories/working-with-files/using-files/working-with-non-code-files).
-
-To regenerate on Windows, use the existing Qt-compatible environment and an FFmpeg installation on PATH. Run these commands from the checkout root with fresh output and work directories.
+To regenerate, use the existing Qt-compatible environment and FFmpeg on PATH with fresh output/work directories. The encoder refuses existing files.
 
 ```powershell
 .\.venv-standard\Scripts\python.exe -m pomodoro.tools.record_demo --language en --output-dir .cache/demo-output --work-dir .cache/demo-work-en
 .\.venv-standard\Scripts\python.exe -m pomodoro.tools.record_demo --language ko --output-dir .cache/demo-output --work-dir .cache/demo-work-ko
 ```
 
-Review the output before copying the four GIF/MP4 files into this directory. The script preserves existing outputs by requiring fresh paths.
+Review all four outputs before replacing repository media. [SHA256.json](SHA256.json) identifies the exact files. All four were fully decoded and checked for 432 frames/36 seconds; encoded choices, posture and bilingual captions were visually inspected. Earlier candidates/releases are preserved.
 
-These demos were encoded with FFmpeg 9.0.2. The installed authoring build reports GPL-3.0-or-later. [FFmpeg licensing information](https://ffmpeg.org/legal.html).
+Original demo text, composition and both character images use [MIT](../LICENSE). Credit: hobby-programmer-5000; AI-assisted procedural vector art/media with ChatGPT/Codex. [Artwork record](../ASSET-LICENSING.md) · [Component notices](../THIRD-PARTY-NOTICES.md). Earlier grants remain available; this version offers MIT for the mint-apron artwork too.
 
-Original demo text, composition and tomato artwork follow the repository's [MIT license](../LICENSE). The Qt/PySide runtime follows the existing [dependency notices](../THIRD-PARTY-NOTICES.md). Locally installed Windows fonts are rendered into bitmap frames, as covered by Microsoft's graphic and video output guidance. [Microsoft font FAQ](https://learn.microsoft.com/en-us/typography/fonts/font-faq).
-
-Windows-startup toggles in the recording use an in-memory backend, not this machine's Run registry entry. The UI and event handlers are real; actual login/reboot behavior is tested separately. Versioned filenames preserve language/version in the basename, and the encoder refuses existing files.
+FFmpeg 9.0.2 was used only as an authoring tool; the installed build reports GPL-3.0-or-later ([FFmpeg terms](https://ffmpeg.org/legal.html)). Installed Windows Segoe UI/Malgun Gothic fonts were rasterized into frames; no font files or FFmpeg executable are distributed ([Microsoft font FAQ](https://learn.microsoft.com/en-us/typography/fonts/font-faq)). Qt/runtime terms remain separate.

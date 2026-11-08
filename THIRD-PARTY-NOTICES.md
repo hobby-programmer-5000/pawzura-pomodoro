@@ -2,7 +2,7 @@
 
 # Component licenses
 
-Original app code, tomato artwork and demo composition use the repository's MIT license. [MIT](LICENSE).
+Original app code, both tomato designs/data, icons and original demo text/composition/character imagery use [MIT](LICENSE), for rights the licensor can grant. [Artwork provenance and exact asset register](ASSET-LICENSING.md). Keep copyright and permission notices. Third-party material below retains its own terms.
 
 | Component | Version | License and source |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Original app code, tomato artwork and demo composition use the repository's MIT 
 | PySide6 Essentials | 6.12.0 | LGPL-3.0-only, selected from upstream alternatives. [Package](https://pypi.org/project/PySide6-Essentials/6.12.0/). |
 | Shiboken6 | 6.12.0 | LGPL-3.0-only, selected from upstream alternatives. [Package](https://pypi.org/project/shiboken6/6.12.0/). |
 | Qt Base | 6.12.0 | Applicable LGPL-3.0 terms and incorporated notices. [Qt licensing](https://doc.qt.io/qt-6/licensing.html). |
-| CPython | Source: user-installed 3.12+; this portable alpha: 3.14.7 | Python Software Foundation terms and incorporated notices. [License](https://docs.python.org/3.14/license.html). |
+| CPython | Source: user-installed 3.12+; this portable release: 3.14.7 | Python Software Foundation terms and incorporated notices. [License](https://docs.python.org/3.14/license.html). |
 | PyInstaller | 6.22.3 | GPL-2.0-or-later with bootloader distribution exception; some files Apache-2.0. Build tool, not a change to the app's MIT license. [Exception](https://pyinstaller.org/en/stable/license.html). |
 | PyInstaller hooks | 2026.9 | Apache-2.0/GPL terms and applicable exceptions as identified in installed package notices. Build tool. [Upstream](https://github.com/pyinstaller/pyinstaller-hooks-contrib). |
 | FFmpeg | 9.0.2 used for demos | Installed authoring build reports GPL-3.0-or-later. [License](https://ffmpeg.org/legal.html). |
@@ -24,4 +24,8 @@ The app and Pawzura source remain MIT. No model weights, FFmpeg executable, Wind
 
 Design influences are recorded in [References and inspiration](INSPIRATION.md).
 
-The separate standalone EXE embeds the same dynamic runtime and notices and extracts them temporarily. Its LGPL compliance route supplies corresponding application code/build scripts and exact library source archives for recombination, as detailed in [BUILD](BUILD.md); the onedir ZIP continues to offer direct compatible-DLL replacement. **Options > Licenses** exposes notices and the exact build source in both formats. Original code/artwork remain MIT.
+The separate standalone EXE embeds the same dynamic runtime and notices and extracts them temporarily. Its LGPL compliance route supplies corresponding application code/build scripts and exact library source archives for recombination, as detailed in [BUILD](BUILD.md); the onedir ZIP continues to offer direct compatible-DLL replacement. **Options > Licenses** exposes notices and the exact build source in both formats. Both original companion drawings and app code are MIT.
+
+The selectable classic and mint-apron art both use MIT. No new library/model or third-party artwork was introduced. The MIT offer for original work does not replace Qt/Python/font or other dependency obligations.
+
+CI-only official actions: checkout v6 (`d23441a48e516b6c34aea4fa41551a30e30af803`) and setup-python v6 (`ece7cb06caefa5fff74198d8649806c4678c61a1`), both MIT. Their code is not bundled in the app. [checkout license](https://github.com/actions/checkout/blob/d23441a48e516b6c34aea4fa41551a30e30af803/LICENSE) · [setup-python license](https://github.com/actions/setup-python/blob/ece7cb06caefa5fff74198d8649806c4678c61a1/LICENSE).

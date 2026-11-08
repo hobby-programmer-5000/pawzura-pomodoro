@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
 )
 
 from .effects import EVENTS, Effect, ScreenCues
+from .character import safe_character
 from .options import Options
 from .settings import create_settings
 from .surfaces import TimerPet, draw_tomato
@@ -19,11 +20,12 @@ TITLE = "Pawzura Pomodoro"
 
 
 class Companion:
-    def __init__(self, app, store, clock=None, show_tray=True, startup=None):
+    def __init__(self, app, store, clock=None, show_tray=True, startup=None, pose_clock=None):
         self.app = app
         self.store = store
         self.startup = startup
         self.language = self.read_language(store)
+        self.character = safe_character(store.value("character", "sprout"))
         self.effects = store.value("effects", True, type=bool)
         self.cue_settings = {event: Effect.load(store, event) for event in EVENTS}
         try:
@@ -38,9 +40,10 @@ class Companion:
         rest = self.read_minutes("rest", DEFAULT_REST_MINUTES)
         self.timer = PomodoroTimer(work, rest) if clock is None else PomodoroTimer(work, rest, clock)
         self.cues = ScreenCues(app)
+        self.cues.set_character(self.character)
         self.cues.action_requested.connect(self.cue_action)
         self.options = None
-        self.pet = TimerPet(self.language, self.direction)
+        self.pet = TimerPet(self.language, self.direction, pose_clock, self.character)
         position = store.value("position")
         if not self.walking:
             saved = {"x": position.x(), "y": position.y()} if isinstance(position, QPoint) else None
@@ -116,12 +119,12 @@ class Companion:
         self.store.sync()
         self.refresh()
 
-    def make_icon(self):
+    def make_icon(self, character=None):
         pixmap = QPixmap(128, 128)
         pixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(pixmap)
         painter.translate(-8, -19)
-        draw_tomato(painter)
+        draw_tomato(painter, character=self.character if character is None else character)
         painter.end()
         return QIcon(pixmap)
 
@@ -152,6 +155,7 @@ class Companion:
         self.update_cue_text()
 
     def update_display(self):
+        self.pet.set_phase(self.timer.phase)
         display = self.countdown(), self.toggle_label()
         if display == self.last_display:
             return
@@ -159,7 +163,7 @@ class Companion:
         countdown, action = display
         self.actions["toggle"].setText(action)
         self.actions["reset"].setEnabled(self.timer.phase != "ready")
-        self.pet.set_countdown(self.countdown(compact=True), action, self.timer.phase == "break")
+        self.pet.set_countdown(self.countdown(compact=True), action)
         self.tray.setToolTip(f"{TITLE} · {countdown}")
         if self.options:
             self.options.update_timer(countdown, action)
@@ -177,6 +181,7 @@ class Companion:
 
     def handle_transition(self, phase):
         if phase:
+            self.pet.set_phase(self.timer.phase)
             self.remind_at = None
             self.cues.clear()
             if self.effects and phase in EVENTS:
@@ -258,6 +263,15 @@ class Companion:
     def set_language(self, language):
         self.language = language
         self.save(language=language)
+
+    def set_character(self, character):
+        self.character = safe_character(character)
+        self.pet.character = self.character
+        self.pet.update()
+        self.cues.set_character(self.character)
+        self.tray.setIcon(self.make_icon())
+        self.app.setWindowIcon(self.tray.icon())
+        self.save(character=self.character)
 
     def set_work(self, minutes):
         self.timer.work = minutes
