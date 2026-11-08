@@ -1,4 +1,4 @@
-"""MIT renderer for bounded vector-art data; artwork has its separate notice."""
+"""MIT renderer for bounded MIT vector-art data."""
 from functools import lru_cache
 from importlib.resources import files
 import json

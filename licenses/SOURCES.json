@@ -789,10 +789,5 @@
     "source": "https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-4.0.0.tar.gz",
     "sha256": "2713324211652ce4a60e6e21e54f9dc3004299e591b0933a352f1a89c5fb53c2",
     "member": "mpdecimal-4.0.0/COPYRIGHT.txt"
-  },
-  {
-    "path": "CC-BY-NC-SA-4.0.txt",
-    "source": "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt",
-    "sha256": "e66c269d4819aaab34b49ef5220c4ddab6756f21bb5180761a4eb8561f2b7bbd"
   }
 ]

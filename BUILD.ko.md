@@ -71,4 +71,4 @@ Windows 현재 사용자 My 저장소에 이미 발급된 공인 코드 서명 �
 
 ## 알파 3 캐릭터 포함 파일
 
-두 형식에 `pomodoro/art/sprout-tomato-v1.json`, 자산 등록부·캐릭터 정책·수정하지 않은 CC 원문이 들어 있어요. 폴더형 자원은 `_internal/pomodoro/art/`에, 단일 EXE는 같은 패키지 경로의 임시 추출 위치에 있어요. `BUILD-INFO.json`에 자원 SHA-256을 기록하고 검사기가 빌드 소스와 파일·고지를 대조해요. wheel에도 package-data로 그림을 포함해요. [그림 조건·일반 업무 추가 허용](CHARACTER-POLICY.ko.md)은 MIT 코드·LGPL 런타임 권한과 별도예요. 새 런타임 의존성은 없어요.
+두 형식에 `pomodoro/art/sprout-tomato-v1.json`, 자산 기록·캐릭터 출처·MIT 원문이 들어 있어요. 폴더형 자원은 `_internal/pomodoro/art/`에, 단일 EXE는 같은 패키지 경로의 임시 추출 위치에 있어요. `BUILD-INFO.json`에 자원 SHA-256을 기록하고 검사기가 빌드 소스와 파일·고지를 대조해요. wheel에도 package-data로 그림을 포함해요. 두 그림과 자체 코드는 MIT이며 [그림 출처](CHARACTER-POLICY.ko.md)와 LGPL 런타임 의무도 문서에 남겨요. 새 런타임 의존성은 없어요.

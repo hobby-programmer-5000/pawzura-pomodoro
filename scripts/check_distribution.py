@@ -23,9 +23,9 @@ def check_art(info, read):
     for name, hashed in expected.items():
         if digest(ROOT / name) != hashed or hashlib.sha256(read(name)).hexdigest() != hashed:
             raise ValueError(f"Character payload mismatch: {name}")
-    if json.loads(read(ART))["license"] != "CC-BY-NC-SA-4.0":
+    if json.loads(read(ART))["license"] != "MIT":
         raise ValueError("Wrong character license")
-    for name in ("CHARACTER-POLICY.md", "ASSET-LICENSING.md", "licenses/CC-BY-NC-SA-4.0.txt"):
+    for name in ("CHARACTER-POLICY.md", "ASSET-LICENSING.md", "LICENSE"):
         if hashlib.sha256(read(name)).hexdigest() != digest(ROOT / name):
             raise ValueError(f"Character notice mismatch: {name}")
 

@@ -4,4 +4,3 @@
 *.toml text eol=lf
 # Preserve reviewed upstream notices byte for byte, including their whitespace.
 licenses/upstream/** -text -whitespace
-licenses/CC-BY-NC-SA-4.0.txt -text -whitespace

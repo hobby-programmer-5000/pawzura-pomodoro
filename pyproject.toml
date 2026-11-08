@@ -8,8 +8,8 @@ version = "0.1.0a3"
 description = "A visual Pomodoro timer with a walking tomato companion"
 readme = "README.md"
 requires-python = ">=3.12,<3.16"
-license = "MIT AND CC-BY-NC-SA-4.0"
-license-files = ["LICENSE", "licenses/CC-BY-NC-SA-4.0.txt", "CHARACTER-POLICY.md", "ASSET-LICENSING.md", "CHARACTER-POLICY.ko.md", "ASSET-LICENSING.ko.md"]
+license = "MIT"
+license-files = ["LICENSE", "CHARACTER-POLICY.md", "ASSET-LICENSING.md", "CHARACTER-POLICY.ko.md", "ASSET-LICENSING.ko.md"]
 authors = [{name = "hobby-programmer-5000"}]
 dependencies = [
     "PySide6-Essentials==6.12.0",

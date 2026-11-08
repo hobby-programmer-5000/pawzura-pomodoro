@@ -2,7 +2,7 @@
 
 # Component licenses
 
-Original code and demo text/composition remain [MIT](LICENSE). The new designated mint-apron character, rendered icons and character portions of alpha-3 demos use **CC BY-NC-SA 4.0** for rights held by the licensor, with [separate ordinary paid-work app-use permission](CHARACTER-POLICY.md). [Asset register and attribution](ASSET-LICENSING.md) · [Unmodified CC legal text](licenses/CC-BY-NC-SA-4.0.txt). Earlier tomato art and demos retain their MIT grants; no blanket relicensing of code or third-party material applies.
+Original app code, both tomato designs/data, icons and original demo text/composition/character imagery use [MIT](LICENSE), for rights the licensor can grant. [Artwork provenance and exact asset register](ASSET-LICENSING.md). Keep copyright and permission notices. Third-party material below retains its own terms.
 
 | Component | Version | License and source |
 | --- | --- | --- |
@@ -24,6 +24,6 @@ The app and Pawzura source remain MIT. No model weights, FFmpeg executable, Wind
 
 Design influences are recorded in [References and inspiration](INSPIRATION.md).
 
-The separate standalone EXE embeds the same dynamic runtime and notices and extracts them temporarily. Its LGPL compliance route supplies corresponding application code/build scripts and exact library source archives for recombination, as detailed in [BUILD](BUILD.md); the onedir ZIP continues to offer direct compatible-DLL replacement. **Options > Licenses** exposes notices and the exact build source in both formats. Original code and historical artwork remain MIT; newly designated artwork follows the asset register.
+The separate standalone EXE embeds the same dynamic runtime and notices and extracts them temporarily. Its LGPL compliance route supplies corresponding application code/build scripts and exact library source archives for recombination, as detailed in [BUILD](BUILD.md); the onedir ZIP continues to offer direct compatible-DLL replacement. **Options > Licenses** exposes notices and the exact build source in both formats. Both original companion drawings and app code are MIT.
 
-`pomodoro/classic.py` restores the historical MIT tomato renderer and adds MIT seated-pose support. It is selectable alongside the new CC-designated art; its historical permissions are unchanged. No new library/model or third-party artwork was introduced for character selection.
+The selectable classic and mint-apron art both use MIT. No new library/model or third-party artwork was introduced. The MIT offer for original work does not replace Qt/Python/font or other dependency obligations.

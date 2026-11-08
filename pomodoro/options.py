@@ -125,9 +125,6 @@ class Options(QDialog):
             self.character.addItem(controller.make_icon(character), "", character)
         self.character.activated.connect(lambda _: controller.set_character(self.character.currentData()))
         self.add_field(form, "character", self.character)
-        self.character_notice = QLabel()
-        self.character_notice.setWordWrap(True)
-        form.addRow(self.character_notice)
         for key, value, callback in (
             ("work_minutes", controller.timer.work, controller.set_work),
             ("rest_minutes", controller.timer.rest, controller.set_rest),
@@ -213,7 +210,6 @@ class Options(QDialog):
         for index, character in enumerate(CHARACTERS):
             self.character.setItemText(index, text[f"character_{character}"])
         self.character.setCurrentIndex(self.character.findData(owner.character))
-        self.character_notice.setText(text[f"character_{owner.character}_notice"])
         self.effects.setText(text["effects"])
         self.effects.setChecked(owner.effects)
         self.walking.setText(text["walking"])

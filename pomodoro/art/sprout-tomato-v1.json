@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "sprout-tomato-v1",
   "title": "Sprout Tomato — mint apron edition",
-  "license": "CC-BY-NC-SA-4.0",
+  "license": "MIT",
   "credit": "hobby-programmer-5000; AI-assisted vector artwork with ChatGPT/Codex",
   "palette": {
     "outline": "#4b3447",
@@ -677,5 +677,5 @@
       ]
     }
   ],
-  "notice": "ASSET-LICENSING.md; CHARACTER-POLICY.md (supplemental work-use permission)"
+  "notice": "LICENSE; ASSET-LICENSING.md"
 }

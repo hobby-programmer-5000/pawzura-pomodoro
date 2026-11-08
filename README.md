@@ -33,13 +33,13 @@ By default, work starts with a 1-second edge glow and breaks with a 3-second dim
 
 **Dismiss this effect** closes the current effect and cancels a pending reminder. **Turn effects off**, available on interactive effects and in both menus, also disables future effects. The timer continues. Timed effects allow clicks through, except the opaque cover, which has visible dismissal controls.
 
-**Options > General > Character** lets you choose **Classic tomato** or **Mint apron tomato** with a picture of each. The change applies immediately to the companion, tray icon and reminders, and is saved for the next launch. It keeps the timer and current posture. The classic drawing remains MIT; the mint-apron artwork has the separate terms shown below.
+**Options > General > Character** lets you choose **Classic tomato** or **Mint apron tomato** with a picture of each. The change applies immediately to the companion, tray icon and reminders, and is saved for the next launch. It keeps the timer and current posture. Both drawings use MIT.
 
 During a break, either companion stops in place, sits down and closes its eyes. It stays seated with eyes open while waiting for the next work interval. Starting work makes it stand up before it walks again. Pausing a break keeps it asleep; your walking/pinned preference is preserved.
 
 Drag the companion to pin it. Turn **Let companion walk** back on to resume walking. Set the walking direction in Options, or choose **Bring companion back** to return it to the primary display.
 
-Code remains [MIT](LICENSE). The new mint-apron character uses **CC BY-NC-SA 4.0**, with separate permission for ordinary app use at paid work. Character merchandise, branding and commercial character exploitation need separate permission. Earlier MIT tomato art keeps its grants. See the [character policy](CHARACTER-POLICY.md) and [exact asset register](ASSET-LICENSING.md). Movement and dragging reuse Pawzura's pet controls. The runtime uses the existing PySide6 Essentials and Shiboken 6.12.0. See the [dependency notices](THIRD-PARTY-NOTICES.md) for LGPL terms and distribution obligations, and [References and inspiration](INSPIRATION.md) for the ideas behind the display controls.
+Original code, both companion drawings, icons and original demo material use [MIT](LICENSE). See the [artwork provenance](ASSET-LICENSING.md); third-party components retain their own terms. Movement and dragging reuse Pawzura's pet controls. The runtime uses the existing PySide6 Essentials and Shiboken 6.12.0. See the [dependency notices](THIRD-PARTY-NOTICES.md) for LGPL terms and distribution obligations, and [References and inspiration](INSPIRATION.md) for the ideas behind the display controls.
 
 The Pawzura movement dependency is pinned to [commit 23bd3b9](https://github.com/hobby-programmer-5000/pawzura/blob/23bd3b90435d6e5ab6c0dd510d8dc5b8897489a6/pawzura/pet.py) and an archive SHA256 in requirements.txt. The package is installed from its public source archive.
 
