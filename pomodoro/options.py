@@ -6,7 +6,7 @@ import sys
 from PySide6.QtCore import QSettings, QSignalBlocker, QSize, Qt, QUrl
 from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QDialog, QFormLayout, QHBoxLayout, QLabel, QPushButton,
-    QMessageBox, QSpinBox, QTabWidget, QTextBrowser, QVBoxLayout, QWidget,
+    QMessageBox, QScrollArea, QSpinBox, QTabWidget, QTextBrowser, QVBoxLayout, QWidget,
 )
 
 from .effects import EVENTS, STYLES, retention_choices
@@ -151,6 +151,12 @@ class Options(QDialog):
         self.effects = QCheckBox()
         self.effects.clicked.connect(controller.set_effects)
         form.addRow(self.effects)
+        self.pet_visible = QCheckBox()
+        self.pet_visible.clicked.connect(controller.set_pet_visible)
+        form.addRow(self.pet_visible)
+        self.visibility_help = QLabel()
+        self.visibility_help.setWordWrap(True)
+        form.addRow(self.visibility_help)
         self.walking = QCheckBox()
         self.walking.clicked.connect(controller.set_walking)
         form.addRow(self.walking)
@@ -165,9 +171,9 @@ class Options(QDialog):
         self.help.setWordWrap(True)
         general_layout.addWidget(self.help)
         general_layout.addStretch()
-        self.tabs.addTab(general, "")
+        self.general_scroll = self.scroll_tab(general)
         self.effect_options = EffectOptions(controller)
-        self.tabs.addTab(self.effect_options, "")
+        self.scroll_tab(self.effect_options)
         self.save_status = QLabel()
         self.save_status.setWordWrap(True)
         layout.addWidget(self.save_status)
@@ -189,6 +195,15 @@ class Options(QDialog):
         buttons.insertWidget(buttons.count() - 1, self.licenses_button)
         for button in (self.toggle, self.reset, self.close_button):
             button.setAutoDefault(False)
+        self.resize(520, min(540, max(320, self.screen().availableGeometry().height() - 40)))
+
+    def scroll_tab(self, content):
+        scroll = QScrollArea()
+        scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(content)
+        self.tabs.addTab(scroll, "")
+        return scroll
 
     def add_field(self, form, key, widget):
         label = QLabel()
@@ -212,6 +227,9 @@ class Options(QDialog):
         self.character.setCurrentIndex(self.character.findData(owner.character))
         self.effects.setText(text["effects"])
         self.effects.setChecked(owner.effects)
+        self.pet_visible.setText(text["pet_visible"])
+        self.pet_visible.setChecked(owner.pet_visible)
+        self.visibility_help.setText(text["visibility_help"])
         self.walking.setText(text["walking"])
         self.walking.setChecked(owner.walking)
         self.startup.setText(text["startup"])

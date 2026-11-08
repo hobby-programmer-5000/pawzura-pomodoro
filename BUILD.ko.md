@@ -2,7 +2,7 @@
 
 # Windows 포터블 빌드
 
-Windows x64 ZIP과 별도 단일 EXE 중에서 선택하세요. ZIP은 전체를 풀고 `PawzuraPomodoro.exe`를 실행하며 `_internal` 폴더를 함께 유지해요. `PawzuraPomodoro-0.1.0-windows-x64.exe` 단일 파일은 동반 폴더가 필요 없어요. 둘 다 Python 설치 없이 실행해요. 단일 파일은 실행 중 임시 폴더에 내장 런타임을 풀기 때문에 첫 시작이 더 걸릴 수 있어요. 실행 파일에는 코드 서명이 없어요. 이 저장소의 Releases에서 내려받고, 서명 없는 앱에 Windows 평판 안내가 나타나면 공개된 SHA256을 확인한 뒤 실행 여부를 결정하세요.
+Windows x64 ZIP과 별도 단일 EXE 중에서 선택하세요. ZIP은 전체를 풀고 `PawzuraPomodoro.exe`를 실행하며 `_internal` 폴더를 함께 유지해요. `PawzuraPomodoro-0.2.0-windows-x64.exe` 단일 파일은 동반 폴더가 필요 없어요. 둘 다 Python 설치 없이 실행해요. 단일 파일은 실행 중 임시 폴더에 내장 런타임을 풀기 때문에 첫 시작이 더 걸릴 수 있어요. 실행 파일에는 코드 서명이 없어요. 이 저장소의 Releases에서 내려받고, 서명 없는 앱에 Windows 평판 안내가 나타나면 공개된 SHA256을 확인한 뒤 실행 여부를 결정하세요.
 
 일반 배포본은 사용자별 고정 경로 `%APPDATA%/PawzuraPomodoro/Desktop.ini`를 공유해요. 소스 실행은 같은 폴더의 `Development.ini`를 사용해요. 이전 알파 1/소스 시험의 `%APPDATA%/Pawzura/Pomodoro.ini`는 보존하고 자동으로 가져오지 않아요. 유효한 1분 시험 값이 새 배포 앱의 기본값이 되지 않게 분리했어요. 새 배포 프로필은 영어, 작업 50분·휴식 10분, 걷기·효과 켜기예요. 이후 바꾼 값은 업데이트 후에도 유지되고 ZIP과 단일 EXE가 공유해요. 휴식 시간 옆 **50 / 10** 버튼은 현재 타이머를 중단하지 않고 다음 구간부터 기본 시간을 복원해요.
 
@@ -15,7 +15,7 @@ py -3.14 -m venv .venv-standard
 .\.venv-standard\Scripts\python.exe -m pip install -r requirements-build.txt
 .\.venv-standard\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv-standard\Scripts\python.exe -m pomodoro --smoke-check --smoke-output .cache/source-smoke.json
-.\.venv-standard\Scripts\python.exe scripts/build.py --dist-dir dist/0.1.0 --single-exe
+.\.venv-standard\Scripts\python.exe scripts/build.py --dist-dir dist/0.2.0 --single-exe
 ```
 
 검토한 변경을 먼저 커밋해 주세요. 빌더는 미커밋 변경이나 이미 존재하는 출력 폴더를 거부해요. 재시도마다 새 출력 이름을 사용하고 이전 증거는 보존해요. 패키징 도구는 PyInstaller 6.22.3과 hooks 2026.9에 고정하며 Qt/PySide/Shiboken은 기존 6.12.0을 유지해요. `BUILD-INFO.json`에는 실제 Python/의존성 버전, Git 커밋, 소스 해시를 기록해요. 같은 절차로 다시 만들 수 있지만 Windows 바이너리가 바이트 단위로 동일하다고 보장하지는 않아요.
@@ -27,7 +27,7 @@ py -3.14 -m venv .venv-standard
 ## 내려받은 압축 파일 확인
 
 ```powershell
-Get-FileHash .\PawzuraPomodoro-0.1.0-windows-x64.zip -Algorithm SHA256
+Get-FileHash .\PawzuraPomodoro-0.2.0-windows-x64.zip -Algorithm SHA256
 ```
 
 릴리스의 `.sha256` 파일과 비교해 주세요. 해시 일치는 파일의 동일성을 확인하며 게시자의 신뢰도를 판정하지는 않아요. 관리자는 같은 소스 체크아웃에 빌드 의존성을 설치한 뒤 `python scripts/check_distribution.py <압축을푼폴더> --embedded`로도 확인할 수 있어요.
@@ -39,7 +39,7 @@ Get-FileHash .\PawzuraPomodoro-0.1.0-windows-x64.zip -Algorithm SHA256
 Get-Content "$env:TEMP\pomodoro-smoke.json"
 ```
 
-보고서에 `PASS`, `frozen: true`, 버전 `0.1.0`이 있어야 해요. 진단 창은 잠깐 나타난 뒤 닫혀요. 트레이 OS 입력, 잠금, 절전, RDP, 모니터 연결 변경은 이 명령으로 검사하지 않아요. [결과와 제한](RESULTS.ko.md), [수동 시나리오](TESTING.ko.md)를 참고하세요. Windows 11 소스 세션 결과만으로 배포 EXE의 호환성을 확정하지 않으며 해당 바이너리를 Windows 11에서 별도로 확인해야 해요.
+보고서에 `PASS`, `frozen: true`, 버전 `0.2.0`이 있어야 해요. 진단 창은 잠깐 나타난 뒤 닫혀요. 트레이 OS 입력, 잠금, 절전, RDP, 모니터 연결 변경은 이 명령으로 검사하지 않아요. [결과와 제한](RESULTS.ko.md), [수동 시나리오](TESTING.ko.md)를 참고하세요. Windows 11 소스 세션 결과만으로 배포 EXE의 호환성을 확정하지 않으며 해당 바이너리를 Windows 11에서 별도로 확인해야 해요.
 
 일반 메뉴·트레이·인스턴스 잠금을 사용하되 Windows 자동 시작 등록은 비활성화한 별도 프로필로 실행하려면 `PawzuraPomodoro.exe --settings-file <새폴더>/settings.ini`를 사용하세요. 전용 폴더를 지정해 주세요. 같은 폴더의 프로필은 잠금을 공유해요. 기본 설정 위치는 Qt가 Windows의 알려진 폴더 API로 결정하므로 APPDATA/LOCALAPPDATA 환경변수 변경에 의존하지 마세요.
 
@@ -79,4 +79,4 @@ GitHub Actions의 `Windows checks` 작업은 깨끗한 Windows 실행기에 고�
 
 main 정책은 PR·최신 `Windows checks` 통과·대화 해결을 요구하고 관리자에게도 적용하며 강제 푸시·삭제를 막아요. 개인 관리 저장소이므로 외부 승인 리뷰 수는 요구하지 않아요. 보호 설정은 GitHub에 적용하고 다시 읽어 확인하며 Markdown 파일 자체가 강제하는 것은 아니에요. GitHub Free에서는 공개 전환 후 사용할 수 있어요. [브랜치 보호 안내](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches).
 
-0.1.0은 알파 3 개발 스냅샷에서 검증한 36초 데모를 유지해요. 보여주는 동작·UI는 같고 영상에 버전 번호는 표시하지 않으며 파일명·해시로 출처를 보존해요. 정식 릴리스라고 해서 코드 서명이나 모든 Windows 11·하드웨어 수동 검사를 마쳤다는 뜻은 아니에요.
+0.2.0은 검증된 0.1.0a3 개발 시점의 36초 녹화를 유지해요. 파일명과 해시는 그 출처를 보존하며, 새 숨김·표시 조작이 없는 이전 기능·옵션 화면이에요. 격리 진단은 한영 숨김·다시 표시, 계속되는 타이머·알림·다시 알림, 현재 자세 복원도 검사해요. 새 설정에서는 캐릭터가 보이고 기존 표시 설정은 유지돼요. 정식 배포가 서명이나 모든 Windows 11·하드웨어 수동 검사의 완료를 뜻하지는 않아요.

@@ -1,7 +1,8 @@
 from pathlib import Path
 import sys
+from time import monotonic
 
-from PySide6.QtCore import QLockFile, QPoint, QSettings, QTimer, Qt
+from PySide6.QtCore import QLockFile, QPoint, QPointF, QSettings, QTimer, Qt
 from PySide6.QtGui import QAction, QActionGroup, QIcon, QPainter, QPixmap
 from PySide6.QtWidgets import (
     QApplication, QMenu, QMessageBox, QSystemTrayIcon,
@@ -24,6 +25,8 @@ class Companion:
         self.app = app
         self.store = store
         self.startup = startup
+        self.use_tray = show_tray
+        self.pet_visible = store.value("pet_visible", True, type=bool)
         self.language = self.read_language(store)
         self.character = safe_character(store.value("character", "sprout"))
         self.effects = store.value("effects", True, type=bool)
@@ -65,6 +68,7 @@ class Companion:
             self.language_actions[code] = action
         for key, callback in (
             ("options", self.show_options), ("toggle", self.toggle), ("reset", self.reset),
+            ("visibility", self.toggle_pet),
             ("effects", self.set_effects), ("effects_options", self.show_effect_options),
             ("dismiss", self.dismiss_effect), ("walking", self.set_walking), ("home", self.recover_pet),
             ("quit", app.quit),
@@ -92,7 +96,7 @@ class Companion:
         self.cues.changed.connect(self.refresh_effect_action)
         self.refresh()
         self.refresh_effect_action()
-        self.pet.show()
+        self.apply_pet_visibility()
         self.poll = QTimer(app)
         self.poll.timeout.connect(self.tick)
         self.poll.start(150)
@@ -141,8 +145,9 @@ class Companion:
 
     def refresh(self):
         for key, action in self.actions.items():
-            if key != "toggle":
+            if key not in ("toggle", "visibility"):
                 action.setText(self.text[key])
+        self.actions["visibility"].setText(self.text["hide_pet" if self.pet_visible else "show_pet"])
         self.actions["effects"].setChecked(self.effects)
         self.actions["walking"].setChecked(self.walking)
         self.language_actions[self.language].setChecked(True)
@@ -327,16 +332,54 @@ class Companion:
         self.walking = False
         self.save(walking=False, position=QPoint(position["x"], position["y"]))
 
+    def toggle_pet(self):
+        self.set_pet_visible(not self.pet_visible)
+
+    def set_pet_visible(self, visible):
+        self.pet_visible = bool(visible)
+        self.apply_pet_visibility()
+        self.save(pet_visible=self.pet_visible)
+
+    def apply_pet_visibility(self):
+        # Only the avatar animation stops; countdown, tray and reminders stay live.
+        self.pet.reset_pointer()
+        self.pet.reaction = None
+        self.pet.hovered = False
+        if self.pet_visible:
+            self.pet.posture.update()
+            self.pet.place_at(QPointF(self.pet.px, self.pet.py))
+            self.pet.last_tick = monotonic()
+            self.pet.show()
+            self.pet.timer.start(33)
+        else:
+            self.pet.timer.stop()
+            self.pet.menu.hide()
+            self.pet.hide()
+            if self.tray_unavailable():
+                self.open_options()
+
+    def tray_unavailable(self):
+        return self.use_tray and not QSystemTrayIcon.isSystemTrayAvailable()
+
+    def restore_access(self):
+        if not self.pet_visible and self.tray_unavailable():
+            self.set_pet_visible(True)
+
     def recover_pet(self):
         self.pet.reset_pointer()
         self.pet.home()
         if not self.walking:
             self.save_placement(self.pet.resting_position())
+        self.set_pet_visible(True)
 
     def show_options(self):
         self.dismiss_effect()
+        self.open_options()
+
+    def open_options(self):
         if self.options is None:
             self.options = Options(self)
+            self.options.finished.connect(self.restore_access)
         self.options.refresh()
         self.options.show()
         self.options.raise_()

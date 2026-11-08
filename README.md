@@ -10,7 +10,7 @@ When I get absorbed in work, I sometimes forget to take a break. Even with a Pom
 
 I made Pawzura Pomodoro because I wanted a large, clear visual reminder on the screen I am already using, so I can notice when it is time to rest.
 
-Download either the **portable ZIP** or the **standalone EXE** from [Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases). For the ZIP, extract everything and open **PawzuraPomodoro.exe**. The versioned standalone EXE runs by itself. Neither needs Python installed. Version 0.1.0 is unsigned; SmartScreen can still warn. [Build, verification and removal](BUILD.md).
+Download either the **portable ZIP** or the **standalone EXE** from [Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases). For the ZIP, extract everything and open **PawzuraPomodoro.exe**. The versioned standalone EXE runs by itself. Neither needs Python installed. Version 0.2.0 is unsigned; SmartScreen can still warn. [Build, verification and removal](BUILD.md).
 
 [Windows 11 manual test scenarios](TESTING.md).
 
@@ -38,6 +38,10 @@ By default, work starts with a 1-second edge glow and breaks with a 3-second dim
 During a break, either companion stops in place, sits down and closes its eyes. It stays seated with eyes open while waiting for the next work interval. Starting work makes it stand up before it walks again. Pausing a break keeps it asleep; your walking/pinned preference is preserved.
 
 Drag the companion to pin it. Turn **Let companion walk** back on to resume walking. Set the walking direction in Options, or choose **Bring companion back** to return it to the primary display.
+
+Use **Hide companion** in the companion/tray menu, or clear **Options > General > Show desktop companion**, when the avatar is distracting. The avatar and badge disappear; the timer, tray controls and visual reminders keep running. Right-click the notification-area icon (possibly under **^**) > **Show companion** to restore it, or enable the checkbox. **Bring companion back** also shows it on the primary display. The choice survives restart without changing walking or pinned placement. If no system tray is available, Options opens; closing it restores the companion. Options tabs scroll on smaller displays.
+
+The linked 0.1.0a3 recordings show the earlier feature set; they do not demonstrate hide/show and predate the new Options controls.
 
 Original code, both companion drawings, icons and original demo material use [MIT](LICENSE). See the [artwork provenance](ASSET-LICENSING.md); third-party components retain their own terms. Movement and dragging reuse Pawzura's pet controls. The runtime uses the existing PySide6 Essentials and Shiboken 6.12.0. See the [dependency notices](THIRD-PARTY-NOTICES.md) for LGPL terms and distribution obligations, and [References and inspiration](INSPIRATION.md) for the ideas behind the display controls.
 
