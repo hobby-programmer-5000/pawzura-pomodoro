@@ -222,3 +222,14 @@ Run both languages with disposable settings and effects on/off. Record exact ver
 | A3-05 | Drag while seated, recover home, change monitor geometry: remain reachable and seated; dragging still saves pinning. Test negative origins/mixed DPI on suitable hardware. |
 | A3-06 | Open Options > Licenses in both EXEs: both drawings use MIT and the component notices/source link remain accessible; defaults 50/10, startup off. |
 | A3-07 | In both languages choose Classic/Mint apron under General > Character during ready, work, rest and waiting. The picture, tray and reminder skin update immediately; phase/deadline/posture/pinning stay intact. Restart preserves the choice. Unknown stored choices safely fall back to Mint apron. There is no license explanation below the character picker; the separate Licenses button still opens component notices. |
+
+## Version 0.2.0 visibility cases
+
+Use disposable profiles in both languages.
+
+| ID | Procedure and acceptance |
+| --- | --- |
+| H01 | Fresh profile shows the avatar. Hide from its menu, restore through the tray menu, then toggle the General checkbox. Text and check state stay synchronized. |
+| H02 | Hide during work; reach break and waiting, snooze, then start work from tray/Options. Timer and reminders continue; the avatar stays hidden. Show during break/waiting/rising: the current pose returns without a movement jump. |
+| H03 | Hide a pinned or walking avatar and restart. Preserve visibility, walking and saved placement. Language/character/effect changes do not show it; Bring companion back explicitly shows it on the primary display. |
+| H04 | In a test harness without a tray, hiding opens Options without dismissing reminders; closing Options restores the avatar. In a 600 × 400 Options window (within 800 × 480 logical work area), scroll both tabs and reach visibility/timer/close controls in EN/KO. Hardware removal/mixed-DPI and actual OS tray clicks require separate manual evidence. |

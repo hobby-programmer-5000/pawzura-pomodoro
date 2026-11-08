@@ -15,3 +15,5 @@ Pawzura 포모도로의 시각 알림은 아래 문서에 소개된 상호작용
 제품 방향과 기능 선택은 사용자가 정했고, Codex가 이 체크아웃의 Qt 타이머, 시각 효과 설정, 벡터 토마토를 구현했어요. 위 웹 문서는 상호작용을 설계할 때 참고한 자료예요. 구현에는 프로젝트의 Qt 코드와 직접 그린 그림을 사용했어요.
 
 앱의 직접 작성한 코드와 그림에는 저장소의 [MIT 라이선스](LICENSE)가 적용돼요. 런타임 라이브러리는 [외부 구성요소 고지](THIRD-PARTY-NOTICES.ko.md)에 기록된 각 구성요소의 조건을 따라요. 이 문서는 해당 고지와 함께 아이디어를 참고한 경위를 기록해요.
+
+0.2.0 숨김·표시 조작은 2026년 11월 8일 확인한 [Pawzura app.py b2faa85](https://github.com/hobby-programmer-5000/pawzura/blob/b2faa855b3d60987c371f9fcfecaf59c46cb8871/pawzura/app.py)의 표시 상태를 이동 설정과 별도로 저장하고 트레이에서 복원하는 방식을 참고했어요. 소스 분석만 했으며 모듈을 복사하거나 의존성을 올리지 않았어요. 참고 소스는 [MIT](https://github.com/hobby-programmer-5000/pawzura/blob/b2faa855b3d60987c371f9fcfecaf59c46cb8871/LICENSE)이고, 자체 앱 코드의 MIT 및 기존 런타임 조건·고지는 유지해요.

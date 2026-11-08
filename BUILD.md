@@ -2,7 +2,7 @@
 
 # Portable Windows build
 
-Choose either the Windows x64 ZIP or the separate standalone EXE. For the ZIP, extract the whole folder and open `PawzuraPomodoro.exe`; keep `_internal` with it. The standalone `PawzuraPomodoro-0.1.0-windows-x64.exe` needs no companion folder. Both run without Python installation. The standalone file extracts its bundled runtime into a temporary directory during execution, so its first startup can take longer. The executable is unsigned. Download only from this repository's Releases page. Windows may show a reputation prompt for an unsigned release; verify the published SHA256 before deciding whether to run it.
+Choose either the Windows x64 ZIP or the separate standalone EXE. For the ZIP, extract the whole folder and open `PawzuraPomodoro.exe`; keep `_internal` with it. The standalone `PawzuraPomodoro-0.2.0-windows-x64.exe` needs no companion folder. Both run without Python installation. The standalone file extracts its bundled runtime into a temporary directory during execution, so its first startup can take longer. The executable is unsigned. Download only from this repository's Releases page. Windows may show a reputation prompt for an unsigned release; verify the published SHA256 before deciding whether to run it.
 
 Normal packaged runs share the stable per-user `%APPDATA%/PawzuraPomodoro/Desktop.ini` profile. Source runs use `Development.ini` in that directory. The old alpha-1/source-test `%APPDATA%/Pawzura/Pomodoro.ini` is preserved and is not imported: its valid 1-minute test value must not silently become the new desktop default. Fresh desktop settings are English, work 50 minutes/rest 10 minutes, walking/effects on. Subsequent desktop preferences survive updates and are shared by ZIP and standalone EXE. The **50 / 10** button beside the break time restores those durations for the next interval without interrupting an active timer.
 
@@ -15,7 +15,7 @@ py -3.14 -m venv .venv-standard
 .\.venv-standard\Scripts\python.exe -m pip install -r requirements-build.txt
 .\.venv-standard\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv-standard\Scripts\python.exe -m pomodoro --smoke-check --smoke-output .cache/source-smoke.json
-.\.venv-standard\Scripts\python.exe scripts/build.py --dist-dir dist/0.1.0 --single-exe
+.\.venv-standard\Scripts\python.exe scripts/build.py --dist-dir dist/0.2.0 --single-exe
 ```
 
 Commit reviewed changes first. The builder refuses dirty source and existing output directories. Use a new output name for each attempt, retaining previous evidence. Packaging tools are pinned to PyInstaller 6.22.3 and hooks 2026.9; runtime Qt/PySide/Shiboken remains 6.12.0. `BUILD-INFO.json` records the actual Python/dependency versions, Git commit and source hashes. The process is repeatable; it does not claim byte-for-byte reproducible Windows binaries.
@@ -27,7 +27,7 @@ Build evidence is stored locally under `build/<output-name>/`, including `frozen
 ## Verify a downloaded archive
 
 ```powershell
-Get-FileHash .\PawzuraPomodoro-0.1.0-windows-x64.zip -Algorithm SHA256
+Get-FileHash .\PawzuraPomodoro-0.2.0-windows-x64.zip -Algorithm SHA256
 ```
 
 Compare it with the release's `.sha256` file. A successful hash check establishes file identity, not publisher reputation. Maintainers can also run `python scripts/check_distribution.py <extracted-folder> --embedded` from the matching source checkout with the build dependencies installed.
@@ -39,7 +39,7 @@ To diagnose the exact EXE without touching normal preferences:
 Get-Content "$env:TEMP\pomodoro-smoke.json"
 ```
 
-The report must say `PASS`, `frozen: true` and version `0.1.0`. Diagnostic windows appear briefly and close. The command does not test tray OS input, screen lock, sleep, RDP or hardware hot-plug. See [results and limitations](RESULTS.md) and [manual scenarios](TESTING.md). Source-session Windows 11 results do not establish frozen Windows 11 compatibility until that exact binary is tested there.
+The report must say `PASS`, `frozen: true` and version `0.2.0`. Diagnostic windows appear briefly and close. The command does not test tray OS input, screen lock, sleep, RDP or hardware hot-plug. See [results and limitations](RESULTS.md) and [manual scenarios](TESTING.md). Source-session Windows 11 results do not establish frozen Windows 11 compatibility until that exact binary is tested there.
 
 For a regular interactive run with a separate profile, use `PawzuraPomodoro.exe --settings-file <new-folder>/settings.ini`. The normal menus/tray and instance lock remain active, while Windows-startup registration is disabled for this isolated profile. Use a dedicated directory; the lock is shared by profiles in the same directory. Do not rely on overriding APPDATA/LOCALAPPDATA environment variables: Qt uses Windows known-folder APIs for its default settings location.
 
@@ -79,4 +79,4 @@ The `Windows checks` GitHub Actions job installs the pinned runtime on a clean W
 
 The main policy requires a pull request, a successful current `Windows checks` result and resolved conversations, applies to administrators, and rejects force pushes/deletion. No external approving reviewer is required for this solo-maintainer repository. Branch protection is configured and read back on GitHub; a local Markdown file alone does not enforce it. GitHub Free supports this protection after the repository is public. [Protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches).
 
-Version 0.1.0 retains the validated 36-second demonstration recordings from its alpha-3 development snapshot: the shown behavior/UI are unchanged and the recording does not display a version number. Media filenames and hashes preserve that provenance. Formal release status does not imply code signing or completion of every Windows 11/hardware manual scenario.
+Version 0.2.0 retains the validated 36-second recordings from the 0.1.0a3 development snapshot. Their filenames and hashes preserve that provenance: they show the earlier feature set and Options layout, without the new hide/show controls. The isolated diagnostic now also checks hide/show, continuing countdown/reminders/snooze and restoring the current pose in English/Korean. Fresh settings show the companion; existing visibility preferences are preserved. Formal release status does not imply code signing or completion of every Windows 11/hardware manual case.

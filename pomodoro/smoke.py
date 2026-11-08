@@ -80,7 +80,7 @@ def check(render_dir=None):
                     window.show()
             app.processEvents()
         require((owner.language, owner.timer.work, owner.timer.rest) == ("en", 50, 10), "Fresh defaults")
-        require(owner.walking and owner.effects and owner.timer.phase == "ready", "Fresh controls")
+        require(owner.pet_visible and owner.walking and owner.effects and owner.timer.phase == "ready", "Fresh controls")
         require(owner.character == "sprout", "Fresh character")
         require(owner.cue_settings["waiting"].style == "dim", "Default waiting cue")
         require(bool(app.screens()), "No Qt screens")
@@ -177,6 +177,20 @@ def check(render_dir=None):
             require((owner.timer.work, owner.timer.rest) == (50, 10), "Restore 50/10")
             if render_dir:
                 require(owner.options.grab().save(str(render_dir / f"options-{language}.png")), "Options render")
+            normal_size = owner.options.size()
+            owner.options.resize(600, 400)  # Fits an 800 x 480 logical work area.
+            settle()
+            owner.options.general_scroll.ensureWidgetVisible(owner.options.pet_visible)
+            require(owner.options.rect().contains(owner.options.close_button.geometry()), "Compact controls fit")
+            if render_dir:
+                require(owner.options.grab().save(str(render_dir / f"options-compact-{language}.png")), "Compact options render")
+            owner.options.tabs.setCurrentIndex(1)
+            settle()
+            owner.options.tabs.widget(1).ensureWidgetVisible(owner.options.effect_options.preview)
+            if render_dir:
+                require(owner.options.grab().save(str(render_dir / f"effects-compact-{language}.png")), "Compact effects render")
+            owner.options.tabs.setCurrentIndex(0)
+            owner.options.resize(normal_size)
             owner.options.licenses_button.click()
             if owner.options.licenses_dialog:
                 owner.options.licenses_dialog.setWindowFlag(Qt.WindowType.WindowTransparentForInput, True)
@@ -187,7 +201,46 @@ def check(render_dir=None):
             owner.set_work(1)
             owner.set_rest(1)
             owner.options.close()
+            owner.reset()
+            now[0] = 0
+            owner.set_cue("waiting", "edge", "click", 2, False)
+            owner.set_pet_visible(False)
+            owner.actions["toggle"].trigger()
+            now[0] = 60
+            owner.tick()
+            require(owner.cues.phase == "break" and not owner.pet.isVisible(), "Hidden break reminder")
+            pose_now[0] += .8
+            owner.set_pet_visible(True)
+            owner.pet.timer.stop()  # This diagnostic advances animations explicitly.
+            require(owner.pet.posture.state == "seated" and owner.pet.resting, "Restore sleeping pose")
+            owner.set_pet_visible(False)
+            now[0] = 120
+            owner.tick()
+            owner.cue_action("snooze")
+            reminder = owner.remind_at
+            owner.set_pet_visible(True)
+            require(owner.remind_at == reminder, "Showing preserves scheduled reminder")
+            owner.pet.timer.stop()
+            owner.set_pet_visible(False)
+            now[0] = reminder
+            owner.tick()
+            require(owner.cues.phase == "waiting" and not owner.pet.isVisible(), "Hidden snooze reminder")
+            require(owner.poll.isActive() and not owner.pet.timer.isActive(), "Countdown runs without avatar animation")
+            owner.show_options()
+            require(not owner.options.pet_visible.isChecked(), "Hidden checkbox synchronized")
+            settle()
+            if render_dir:
+                require(owner.options.grab().save(str(render_dir / f"options-hidden-{language}.png")), "Hidden options render")
+            owner.options.pet_visible.click()
+            owner.pet.timer.stop()
+            require(owner.pet.isVisible() and owner.pet.posture.state == "seated", "Options restores current pose")
+            owner.set_pet_visible(False)
+            owner.actions["home"].trigger()
+            owner.pet.timer.stop()
+            require(owner.pet_visible and owner.pet.isVisible(), "Recovery restores hidden avatar")
+            owner.options.close()
             report["checks"].append(f"{language}/{owner.character}: cycle, pause/resume, anchored sit/sleep/wait/rise, five previews, all-screen button layout, confirm, cancellation, character options")
+            report["checks"].append(f"{language}: hide/show, continuing countdown/reminders/snooze, current-pose restore, options and recovery")
         disk = create_settings(frozen=True)
         require(disk.value("language") == "ko" and disk.value("work", type=int) == 1, "Persistence")
         require(disk.value("character") == "classic", "Character persistence")
