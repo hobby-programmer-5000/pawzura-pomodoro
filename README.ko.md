@@ -10,13 +10,13 @@
 
 그래서 지금 보고 있는 컴퓨터 화면에 휴식할 시간이라는 표시가 크고 분명하게 나타나면 좋겠다고 생각했어요. 쉬어야 할 때를 놓치지 않도록 눈에 띄는 시각적 알림을 만들고 싶어서 Pawzura 포모도로를 만들었어요.
 
-[Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases)에서 **포터블 ZIP** 또는 **단일 EXE**를 선택하세요. ZIP은 전체를 풀고 **PawzuraPomodoro.exe**를 실행하며, 버전 이름이 붙은 단일 EXE는 그 파일만 실행하면 돼요. 둘 다 Python 설치는 필요 없어요. 이번 알파는 미서명이라 SmartScreen 경고가 나타날 수 있어요. [빌드·검증·삭제 안내](BUILD.ko.md).
+[Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases)에서 **포터블 ZIP** 또는 **단일 EXE**를 선택하세요. ZIP은 전체를 풀고 **PawzuraPomodoro.exe**를 실행하며, 버전 이름이 붙은 단일 EXE는 그 파일만 실행하면 돼요. 둘 다 Python 설치는 필요 없어요. 0.1.0 배포본은 미서명이라 SmartScreen 경고가 나타날 수 있어요. [빌드·검증·삭제 안내](BUILD.ko.md).
 
 [Windows 11 수동 테스트 시나리오](TESTING.ko.md).
 
 ![컴패니언 걷기, 알림 설정, 클릭해서 작업을 시작하는 화면 데모](media/pomodoro-demo-0.1.0a3-ko.gif)
 
-[MP4 데모 보기](media/pomodoro-demo-0.1.0a3-ko.mp4). 새 36초 알파 3 데모는 캐릭터 선택·앉기·휴식 중 눈 감기·앉아서 대기·일어난 뒤 걷기와 50/10 기본값, Windows 자동 시작 옵션, 알림 설정을 실제 앱 화면으로 보여줘요. 두 예제 바탕 화면과 가속 시계를 사용해요. [데모 설명과 다시 만들기](media/README.ko.md).
+[MP4 데모 보기](media/pomodoro-demo-0.1.0a3-ko.mp4). 36초 기능 데모는 캐릭터 선택·앉기·휴식 중 눈 감기·앉아서 대기·일어난 뒤 걷기와 50/10 기본값, Windows 자동 시작 옵션, 알림 설정을 실제 앱 화면으로 보여줘요. 두 예제 바탕 화면과 가속 시계를 사용해요. [데모 설명과 다시 만들기](media/README.ko.md).
 
 1. 표준 CPython 3.12 이상을 사용해요. Python 3.14가 있다면 `py -3.14 -m venv .venv-standard`로 환경을 만들고 `.\.venv-standard\Scripts\python.exe -m pip install -r requirements.txt`를 실행한 뒤 [run.bat](run.bat)을 열어요. 같은 환경에서 `python -m pomodoro`로도 실행할 수 있어요.
 2. 타이머 표시를 클릭해서 시작, 일시정지, 재개해요. 작업이 끝나면 휴식이 자동으로 시작돼요. 휴식이 끝난 뒤 타이머 표시를 다시 클릭하면 다음 작업이 시작돼요.

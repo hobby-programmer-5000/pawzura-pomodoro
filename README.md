@@ -10,13 +10,13 @@ When I get absorbed in work, I sometimes forget to take a break. Even with a Pom
 
 I made Pawzura Pomodoro because I wanted a large, clear visual reminder on the screen I am already using, so I can notice when it is time to rest.
 
-Download either the **portable ZIP** or the **standalone EXE** from [Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases). For the ZIP, extract everything and open **PawzuraPomodoro.exe**. The versioned standalone EXE runs by itself. Neither needs Python installed. This alpha is unsigned; SmartScreen can still warn. [Build, verification and removal](BUILD.md).
+Download either the **portable ZIP** or the **standalone EXE** from [Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases). For the ZIP, extract everything and open **PawzuraPomodoro.exe**. The versioned standalone EXE runs by itself. Neither needs Python installed. Version 0.1.0 is unsigned; SmartScreen can still warn. [Build, verification and removal](BUILD.md).
 
 [Windows 11 manual test scenarios](TESTING.md).
 
 ![Demo of the walking companion, reminder settings and click-to-start cover](media/pomodoro-demo-0.1.0a3-en.gif)
 
-[Watch the MP4 demo](media/pomodoro-demo-0.1.0a3-en.mp4). The new 36-second alpha-3 demo shows choosing Classic or Mint apron tomato, sitting down, sleeping through a break, seated waiting and standing before walking, alongside 50/10 defaults, optional Windows startup and reminder controls using actual app widgets on two example desktops with an accelerated clock. [Demo details and regeneration](media/README.md).
+[Watch the MP4 demo](media/pomodoro-demo-0.1.0a3-en.mp4). The 36-second feature demo shows choosing Classic or Mint apron tomato, sitting down, sleeping through a break, seated waiting and standing before walking, alongside 50/10 defaults, optional Windows startup and reminder controls using actual app widgets on two example desktops with an accelerated clock. [Demo details and regeneration](media/README.md).
 
 1. Use standard CPython 3.12+. With Python 3.14 installed, create the environment using `py -3.14 -m venv .venv-standard`. Run `.\.venv-standard\Scripts\python.exe -m pip install -r requirements.txt`, then open [run.bat](run.bat). You can also run `python -m pomodoro` in that environment.
 2. Click the timer badge to start, pause or resume. A break starts automatically when work ends. Click the badge again after the break to start the next work interval.

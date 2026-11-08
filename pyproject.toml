@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pawzura-pomodoro"
-version = "0.1.0a3"
+version = "0.1.0"
 description = "A visual Pomodoro timer with a walking tomato companion"
 readme = "README.md"
 requires-python = ">=3.12,<3.16"
