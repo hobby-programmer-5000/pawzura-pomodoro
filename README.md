@@ -10,13 +10,13 @@ When I get absorbed in work, I sometimes forget to take a break. Even with a Pom
 
 I made Pawzura Pomodoro because I wanted a large, clear visual reminder on the screen I am already using, so I can notice when it is time to rest.
 
-Download the Windows x64 portable ZIP from [Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases), extract the entire folder and open **PawzuraPomodoro.exe**. Python is not needed for the portable build. [Build, verification and removal](BUILD.md).
+Download either the **portable ZIP** or the **standalone EXE** from [Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases). For the ZIP, extract everything and open **PawzuraPomodoro.exe**. The versioned standalone EXE runs by itself. Neither needs Python installed. This alpha is unsigned; SmartScreen can still warn. [Build, verification and removal](BUILD.md).
 
 [Windows 11 manual test scenarios](TESTING.md).
 
-![Demo of the walking companion, reminder settings and click-to-start cover](media/pomodoro-demo-en.gif)
+![Demo of the walking companion, reminder settings and click-to-start cover](media/pomodoro-demo-0.1.0a2-en.gif)
 
-[Watch the MP4 demo](media/pomodoro-demo-en.mp4). The 22-second demo uses actual app widgets on two example desktops with a shortened clock. [Demo details and regeneration](media/README.md).
+[Watch the MP4 demo](media/pomodoro-demo-0.1.0a2-en.mp4). The refreshed 30-second alpha-2 demo shows 50/10 defaults, optional Windows startup, reminder controls and an explicit restart using actual app widgets on two example desktops with an accelerated clock. [Demo details and regeneration](media/README.md).
 
 1. Use standard CPython 3.12+. With Python 3.14 installed, create the environment using `py -3.14 -m venv .venv-standard`. Run `.\.venv-standard\Scripts\python.exe -m pip install -r requirements.txt`, then open [run.bat](run.bat). You can also run `python -m pomodoro` in that environment.
 2. Click the timer badge to start, pause or resume. A break starts automatically when work ends. Click the badge again after the break to start the next work interval.
@@ -40,3 +40,7 @@ The original tomato drawing and timer code use the repository's [MIT license](LI
 The Pawzura movement dependency is pinned to [commit 23bd3b9](https://github.com/hobby-programmer-5000/pawzura/blob/23bd3b90435d6e5ab6c0dd510d8dc5b8897489a6/pawzura/pet.py) and an archive SHA256 in requirements.txt. The package is installed from its public source archive.
 
 Development checks use `python -m unittest discover -s tests -v`. Windows 11 testing results, methods and remaining coverage are recorded in [Test results](RESULTS.md). Product ownership and AI implementation roles are recorded in [Contributors](CONTRIBUTORS.md).
+
+Under **Options > General**, **Start with Windows** starts the chosen EXE when you sign in. It is off by default; keep the EXE in a permanent folder before enabling it. This option is available in normal packaged runs and disabled in source/custom test profiles. **50 / 10** beside the break time restores the default durations for the next interval.
+
+Alpha 2 separates the desktop profile from old manual-test/source settings. Its first normal run starts at 50/10 even if the old profile saved one minute. Later changes in the new desktop profile are preserved and shared by both EXE formats. See [profile locations and migration](BUILD.md). **Options > Licenses** opens component notices and the exact build source.

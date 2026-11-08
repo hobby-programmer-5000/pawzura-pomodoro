@@ -10,13 +10,13 @@
 
 그래서 지금 보고 있는 컴퓨터 화면에 휴식할 시간이라는 표시가 크고 분명하게 나타나면 좋겠다고 생각했어요. 쉬어야 할 때를 놓치지 않도록 눈에 띄는 시각적 알림을 만들고 싶어서 Pawzura 포모도로를 만들었어요.
 
-[Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases)에서 Windows x64 포터블 ZIP을 받아 폴더 전체를 푼 뒤 **PawzuraPomodoro.exe**를 실행하세요. 포터블 빌드에는 Python 설치가 필요 없어요. [빌드·검증·삭제 안내](BUILD.ko.md).
+[Releases](https://github.com/hobby-programmer-5000/pawzura-pomodoro/releases)에서 **포터블 ZIP** 또는 **단일 EXE**를 선택하세요. ZIP은 전체를 풀고 **PawzuraPomodoro.exe**를 실행하며, 버전 이름이 붙은 단일 EXE는 그 파일만 실행하면 돼요. 둘 다 Python 설치는 필요 없어요. 이번 알파는 미서명이라 SmartScreen 경고가 나타날 수 있어요. [빌드·검증·삭제 안내](BUILD.ko.md).
 
 [Windows 11 수동 테스트 시나리오](TESTING.ko.md).
 
-![컴패니언 걷기, 알림 설정, 클릭해서 작업을 시작하는 화면 데모](media/pomodoro-demo-ko.gif)
+![컴패니언 걷기, 알림 설정, 클릭해서 작업을 시작하는 화면 데모](media/pomodoro-demo-0.1.0a2-ko.gif)
 
-[MP4 데모 보기](media/pomodoro-demo-ko.mp4). 22초 데모는 실제 앱 화면을 두 개의 예제 바탕 화면 위에서 재생하고, 대기 시간을 단축했어요. [데모 설명과 다시 만들기](media/README.ko.md).
+[MP4 데모 보기](media/pomodoro-demo-0.1.0a2-ko.mp4). 새 30초 알파 2 데모는 50/10 기본값, Windows 자동 시작 옵션, 알림 설정과 명시적 작업 재시작을 실제 앱 화면으로 보여줘요. 두 예제 바탕 화면과 가속 시계를 사용해요. [데모 설명과 다시 만들기](media/README.ko.md).
 
 1. 표준 CPython 3.12 이상을 사용해요. Python 3.14가 있다면 `py -3.14 -m venv .venv-standard`로 환경을 만들고 `.\.venv-standard\Scripts\python.exe -m pip install -r requirements.txt`를 실행한 뒤 [run.bat](run.bat)을 열어요. 같은 환경에서 `python -m pomodoro`로도 실행할 수 있어요.
 2. 타이머 표시를 클릭해서 시작, 일시정지, 재개해요. 작업이 끝나면 휴식이 자동으로 시작돼요. 휴식이 끝난 뒤 타이머 표시를 다시 클릭하면 다음 작업이 시작돼요.
@@ -40,3 +40,7 @@
 Pawzura 이동 코드는 [커밋 23bd3b9](https://github.com/hobby-programmer-5000/pawzura/blob/23bd3b90435d6e5ab6c0dd510d8dc5b8897489a6/pawzura/pet.py)과 requirements.txt의 압축 파일 SHA256에 고정돼 있어요. 공개 소스 압축 파일에서 패키지를 설치해요.
 
 개발 검사는 `python -m unittest discover -s tests -v`로 실행해요. Windows 11 검사 결과와 방법, 남은 범위는 [테스트 결과](RESULTS.ko.md)에 기록했어요. 제품 소유와 AI 구현 역할은 [기여자](CONTRIBUTORS.ko.md)에 기록했어요.
+
+**옵션 > 일반 > Windows 로그인 시 자동 시작**은 선택한 EXE를 로그인 때 실행해요. 기본은 꺼짐이며, 켜기 전에 EXE를 계속 사용할 폴더에 두세요. 일반 배포 실행에서 사용할 수 있고 소스/격리 시험 프로필에서는 비활성화돼요. 휴식 시간 옆 **50 / 10**은 다음 구간부터 기본 시간을 복원해요.
+
+알파 2는 배포 앱의 설정을 이전 수동 시험·소스 설정과 분리해요. 이전 프로필에 1분이 저장됐어도 새 배포 프로필의 첫 실행은 50/10으로 시작해요. 새 프로필에서 바꾼 값은 이후에도 유지되고 두 EXE 형식이 공유해요. [설정 위치·이전 프로필 처리](BUILD.ko.md)를 참고하세요. **옵션 > 라이선스**에서는 구성요소 고지와 정확한 빌드 소스를 열 수 있어요.

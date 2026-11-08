@@ -1,5 +1,16 @@
 [English](TESTING.md) · [한국어](TESTING.ko.md)
 
+> Alpha 2 additions: the existing 64-case source-session results do not cover these new release cases. Test the exact ZIP and standalone EXE separately and record the version/hash. For diagnostics use a new `--settings-file` directory; checking real Windows login startup requires a normal packaged run and explicit opt-in.
+
+| New case | Procedure and expected result |
+| --- | --- |
+| A2-01 | Keep an old alpha-1/development profile with work=1. A new normal desktop profile starts at work=50/rest=10 and leaves the old file unchanged. |
+| A2-02 | Set desktop times to 23/7, quit and reopen using the other EXE format: 23/7 remains. Press **50 / 10**: the next interval uses 50/10; an active interval is not interrupted. |
+| A2-03 | Normal packaged **Start with Windows** is initially off. In a permanent EXE folder, enable it, sign out/in and confirm one companion with the same settings. A duplicate `--startup` exits quietly. Disable and confirm no login start. Restore your original state after testing. |
+| A2-04 | Source and explicit test profiles disable the startup option. Move/delete a test EXE before enabling in an isolated backend: show the failure and retain the actual checkbox state. Never overwrite an unrecognized Run value. |
+| A2-05 | Copy only the versioned standalone EXE into a fresh folder on a machine without Python; run, inspect **Licenses**, options, all-monitor effects and persistence. Close and reopen. Compare its exact SHA256 with the release. |
+| A2-06 | Inspect **General** and **Licenses** in English/Korean, including 50/10 values, restore tooltip, startup availability/error and component/source links. Browser-download SmartScreen behavior is recorded separately; this unsigned alpha does not claim to remove its warning. |
+
 # Windows 11 manual test scenarios
 
 This checklist covers the current source app. Record the exact files, Windows build and display configuration you test. The previous automated/native checks ran on Windows 10. The animated demo uses synthetic desktops and a shortened clock. Windows 11 results start as NOT RUN.
