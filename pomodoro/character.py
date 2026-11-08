@@ -8,6 +8,15 @@ import re
 from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QColor, QLinearGradient, QPainter, QPainterPath, QPen
 
+from .classic import draw_classic
+
+
+CHARACTERS = ("sprout", "classic")
+
+
+def safe_character(value):
+    return value if value in CHARACTERS else "sprout"
+
 
 @lru_cache(maxsize=1)
 def artwork():
@@ -93,9 +102,11 @@ def blend(a, b, amount):
     return [x + (y - x) * amount for x, y in zip(a, b)]
 
 
-def draw_tomato(painter, phase=0.0, direction=1, walking=False, resting=False, reaction=None, seated=None):
-    data = artwork()
+def draw_tomato(painter, phase=0.0, direction=1, walking=False, resting=False, reaction=None, seated=None, character="sprout"):
     seated = float(resting) if seated is None else max(0.0, min(1.0, seated))
+    if character == "classic":
+        return draw_classic(painter, phase, direction, walking, resting, reaction, seated)
+    data = artwork()
     walking = walking and seated == 0
     painter.save()
     painter.setRenderHint(QPainter.RenderHint.Antialiasing)

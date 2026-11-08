@@ -61,12 +61,13 @@ class TomatoStamp(QWidget):
         super().__init__(parent)
         self.setFixedSize(76, 76)
         self.resting = False
+        self.character = "sprout"
 
     def paintEvent(self, _):
         painter = QPainter(self)
         painter.scale(.6, .6)
         painter.translate(-8, -20)
-        draw_tomato(painter, resting=self.resting)
+        draw_tomato(painter, resting=self.resting, character=self.character)
         painter.end()
 
 
@@ -227,6 +228,7 @@ class ScreenCues(QObject):
         super().__init__(app)
         self.app = app
         self.windows = {}
+        self.character = "sprout"
         self.phase = None
         self.message = ""
         self.detail = ""
@@ -264,6 +266,8 @@ class ScreenCues(QObject):
                 self.windows[screen] = window
                 window.configure(self.phase, self.effect, self.generation, self.preview)
             window = self.windows[screen]
+            window.tomato.character = self.character
+            window.tomato.update()
             window.set_text(self.message, self.detail, self.labels)
             window.strength = float(self.animation.currentValue() or 0)
             window.place(screen, self.anchor)
@@ -289,6 +293,12 @@ class ScreenCues(QObject):
     def set_text(self, message, detail, labels):
         self.message, self.detail, self.labels = message, detail, labels
         self.layout()
+
+    def set_character(self, character):
+        self.character = character
+        for window in self.windows.values():
+            window.tomato.character = character
+            window.tomato.update()
 
     def update_strength(self, strength):
         for window in self.windows.values():

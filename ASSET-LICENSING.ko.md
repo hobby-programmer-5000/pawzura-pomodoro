@@ -18,3 +18,5 @@ JSON SHA-256: `9e298737c4b93f5702143c4d8562315abfed21a799c3adf7602218eb97dc99f9`
 제외: 기존 MIT 표현, 일반 형태·스타일·색, 독립 그림, 렌더·동작 코드, 화면 배치·문구, Windows 폰트 프로그램, Qt·Python·Pawzura 자료. 이 등록부로 해당 요소의 라이선스를 바꾸지 않습니다. 새 구성은 이전 기본 토마토와 구별되지만 겹치는 표현의 기존 MIT 권한은 철회할 수 없습니다. 저작물성·집행 가능성은 검증되지 않은 법적 문제이며 모방·등록 차단을 보장하지 않습니다.
 
 새 데모의 파일 해시·적용 범위는 [미디어 안내](media/README.ko.md), 구성요소 고지는 [THIRD-PARTY-NOTICES](THIRD-PARTY-NOTICES.ko.md)에 있습니다. 표준 원문 출처: [Creative Commons](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt), SHA-256 `e66c269d4819aaab34b49ef5220c4ddab6756f21bb5180761a4eb8561f2b7bbd`. [CC FAQ](https://creativecommons.org/faq/)는 라이선스 경계와 별도 허락을 설명합니다. 공유 자산에 등록부와 고지를 유지하세요. 새 런타임 의존성은 추가하지 않았습니다.
+
+선택 가능한 기존 그림은 `pomodoro/classic.py`에 있어요. 과거 알파 2 렌더러의 서기 형태·색을 복원했고 새 앉기 보간도 MIT로 구현했어요. CC 지정 대상에서 제외해요. 옵션 > 일반 > 캐릭터에 선택을 저장하며 선택으로 각 그림의 라이선스가 바뀌지는 않아요. EXE 파일 자체의 고정 아이콘은 앞치마 그림이고 실행 중 컴패니언·트레이·알림은 선택을 따라요.

@@ -2,7 +2,7 @@
 
 # Screen demos
 
-The English and Korean GIF/MP4 demos are 30 seconds, 1280 × 800 pixels, and 12 frames per second. The alpha-3 recordings demonstrate walking, 50/10 General options, optional Windows startup, reminder settings, bubble/banner previews, stopping and sitting down with closed eyes at break start, seated waiting after dismissing the cover on the second display, and starting work with the timer badge: stand up first, then walk. The separate enlarged companion view is captured from the same actual widget, including while reminders cover the desktops. The final caption identifies ZIP and standalone EXE choices.
+The English and Korean GIF/MP4 demos are 36 seconds, 1280 × 800 pixels, and 12 frames per second. The alpha-3 recordings demonstrate choosing Classic/Mint apron, walking, 50/10 General options, optional Windows startup, reminder settings, bubble/banner previews, stopping and sitting down with closed eyes at break start, seated waiting after dismissing the cover on the second display, and starting work with the timer badge: stand up first, then walk. The separate enlarged companion view is captured from the same actual widget, including while reminders cover the desktops. The final caption identifies ZIP and standalone EXE choices.
 
 Frames are captured from the app's actual Qt widgets and composed over two synthetic desktops. Settings are temporary. The clock is shortened and a cursor indicator is added for clarity. The display arrangement illustrates the app's multi-monitor behavior. Native verification results are recorded separately in the project checkpoints.
 
@@ -23,4 +23,6 @@ Original demo text and composition remain [MIT](../LICENSE). New character image
 
 Windows-startup toggles in the recording use an in-memory backend, not this machine's Run registry entry. The UI and event handlers are real; actual login/reboot behavior is tested separately. Versioned filenames preserve language/version in the basename, and the encoder refuses existing files.
 
-Exact file hashes are in [SHA256.json](SHA256.json). First version: 0.1.0a3, 2026-11-08. The continuous pose clock is independent of shortened countdown jumps; per-frame posture assertions verify stationarity through the rest/wait/rise sequence. All four encoded outputs were decoded fully and checked for 360 frames, 1280 × 800 and 30 seconds; encoded pose/caption samples were visually reviewed in both languages. Previous release assets are unchanged; earlier source media remain in Git history.
+Exact file hashes are in [SHA256.json](SHA256.json). First version: 0.1.0a3, 2026-11-08. The continuous pose clock is independent of shortened countdown jumps; per-frame posture assertions verify stationarity through the rest/wait/rise sequence. All four encoded outputs were decoded fully and checked for 432 frames, 1280 × 800 and 36 seconds; encoded pose/caption samples were visually reviewed in both languages. Previous release assets are unchanged; earlier source media remain in Git history.
+
+Classic-tomato imagery remains MIT; the CC designation applies to the new mint-apron character portions. Selection uses the actual General options combo box and asserts the choice is persisted.

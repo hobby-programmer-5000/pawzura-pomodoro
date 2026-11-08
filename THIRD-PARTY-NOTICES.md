@@ -25,3 +25,5 @@ The app and Pawzura source remain MIT. No model weights, FFmpeg executable, Wind
 Design influences are recorded in [References and inspiration](INSPIRATION.md).
 
 The separate standalone EXE embeds the same dynamic runtime and notices and extracts them temporarily. Its LGPL compliance route supplies corresponding application code/build scripts and exact library source archives for recombination, as detailed in [BUILD](BUILD.md); the onedir ZIP continues to offer direct compatible-DLL replacement. **Options > Licenses** exposes notices and the exact build source in both formats. Original code and historical artwork remain MIT; newly designated artwork follows the asset register.
+
+`pomodoro/classic.py` restores the historical MIT tomato renderer and adds MIT seated-pose support. It is selectable alongside the new CC-designated art; its historical permissions are unchanged. No new library/model or third-party artwork was introduced for character selection.

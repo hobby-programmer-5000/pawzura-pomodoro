@@ -175,3 +175,66 @@ class PostureTests(unittest.TestCase):
         self.assertEqual(self.store.value("position"), moved)
         self.step_pose(5)
         self.assertEqual(self.pet.pos(), moved)
+
+    def test_switching_character_during_rest_preserves_pose_timer_and_cues(self):
+        self.owner.set_effects(True)
+        self.break_start()
+        self.step_pose(.3)
+        anchor, amount = self.pet.pos(), self.pet.posture.amount
+        state = self.owner.timer.phase, self.owner.timer.deadline, self.owner.timer.paused, self.owner.walking
+        self.owner.show_options()
+        # Opening Options intentionally dismisses effects. Exercise a live cue
+        # after that established behavior, without its real-time expiry.
+        self.owner.show_cue("break")
+        self.owner.cues.animation.pause()
+        token = self.owner.cues.generation
+        for language in ("en", "ko"):
+            self.owner.set_language(language)
+            for character in ("classic", "sprout", "classic"):
+                combo = self.owner.options.character
+                combo.setCurrentIndex(combo.findData(character))
+                combo.activated.emit(combo.currentIndex())
+                self.assertEqual((self.owner.character, self.pet.character), (character, character))
+                self.assertEqual(self.pet.posture.amount, amount)
+                self.assertEqual(self.pet.pos(), anchor)
+                self.assertEqual((self.owner.timer.phase, self.owner.timer.deadline,
+                                  self.owner.timer.paused, self.owner.walking), state)
+                self.assertEqual(self.owner.cues.generation, token)
+                self.assertTrue(all(w.tomato.character == character for w in self.owner.cues.windows.values()))
+                self.assertEqual(self.owner.store.value("character"), character)
+                self.assertFalse(self.owner.tray.icon().isNull())
+        self.owner.options.close()
+        self.step_pose(.7)
+        self.assertEqual(self.pet.posture.state, "seated")
+        self.assertTrue(self.pet.resting)
+        self.clock.now = 120
+        self.owner.tick()
+        self.assertFalse(self.pet.resting)
+        self.owner.toggle()
+        self.step_pose(1)
+        self.assertEqual(self.pet.pos(), anchor)
+        self.step_pose(1.5)
+        self.assertNotEqual(self.pet.pos(), anchor)
+
+    def test_character_choice_survives_restart_and_invalid_setting_recovers(self):
+        self.owner.set_character("classic")
+        other = Companion(self.app, QSettings(self.store.fileName(), QSettings.Format.IniFormat), show_tray=False)
+        try:
+            self.assertEqual(other.character, "classic")
+            self.assertEqual(other.pet.character, "classic")
+            other.show_cue("break")
+            self.assertTrue(all(w.tomato.character == "classic" for w in other.cues.windows.values()))
+        finally:
+            other.shutdown()
+            self.app.aboutToQuit.disconnect(other.shutdown)
+            self.app.processEvents()
+        self.store.setValue("character", "not-installed")
+        bad = Companion(self.app, self.store, show_tray=False)
+        try:
+            self.assertEqual(bad.character, "sprout")
+            bad.set_character(None)
+            self.assertEqual(self.store.value("character"), "sprout")
+        finally:
+            bad.shutdown()
+            self.app.aboutToQuit.disconnect(bad.shutdown)
+            self.app.processEvents()

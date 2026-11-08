@@ -3,13 +3,14 @@ import json
 import re
 import sys
 
-from PySide6.QtCore import QSettings, QSignalBlocker, Qt, QUrl
+from PySide6.QtCore import QSettings, QSignalBlocker, QSize, Qt, QUrl
 from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QDialog, QFormLayout, QHBoxLayout, QLabel, QPushButton,
     QMessageBox, QSpinBox, QTabWidget, QTextBrowser, QVBoxLayout, QWidget,
 )
 
 from .effects import EVENTS, STYLES, retention_choices
+from .character import CHARACTERS
 from .timer import MAX_MINUTES
 
 
@@ -95,7 +96,7 @@ class Options(QDialog):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
-        self.setMinimumWidth(430)
+        self.setMinimumWidth(460)
         layout = QVBoxLayout(self)
         self.status = QLabel()
         status_font = self.status.font()
@@ -118,6 +119,15 @@ class Options(QDialog):
         self.language.addItem("한국어", "ko")
         self.language.activated.connect(lambda _: controller.set_language(self.language.currentData()))
         self.add_field(form, "language", self.language)
+        self.character = QComboBox()
+        self.character.setIconSize(QSize(30, 30))
+        for character in CHARACTERS:
+            self.character.addItem(controller.make_icon(character), "", character)
+        self.character.activated.connect(lambda _: controller.set_character(self.character.currentData()))
+        self.add_field(form, "character", self.character)
+        self.character_notice = QLabel()
+        self.character_notice.setWordWrap(True)
+        form.addRow(self.character_notice)
         for key, value, callback in (
             ("work_minutes", controller.timer.work, controller.set_work),
             ("rest_minutes", controller.timer.rest, controller.set_rest),
@@ -200,6 +210,10 @@ class Options(QDialog):
         self.restore_durations.setToolTip(text["restore_durations"])
         self.restore_durations.setAccessibleName(text["restore_durations"])
         self.language.setCurrentIndex(self.language.findData(owner.language))
+        for index, character in enumerate(CHARACTERS):
+            self.character.setItemText(index, text[f"character_{character}"])
+        self.character.setCurrentIndex(self.character.findData(owner.character))
+        self.character_notice.setText(text[f"character_{owner.character}_notice"])
         self.effects.setText(text["effects"])
         self.effects.setChecked(owner.effects)
         self.walking.setText(text["walking"])

@@ -12,7 +12,7 @@ from pomodoro import __version__
 
 
 FPS = 12
-SECONDS = 30
+SECONDS = 36
 WIDTH, HEIGHT = 1280, 800
 
 CAPTIONS = {
@@ -23,6 +23,7 @@ CAPTIONS = {
         "desktop": "Demo desktop",
         "focus": ("A little company while you focus", "50 minutes of work, then a 10-minute break."),
         "general": ("Choose your timing and Windows startup", "Fresh defaults: 50 minutes of work, 10 minutes of rest. Startup is optional."),
+        "character": ("Choose your companion", "Classic tomato or mint apron. Your choice is saved."),
         "settings": ("Choose how you want to be reminded", "Edge glow · Companion bubble · Top banner · Dim screen · Cover screen"),
         "break": ("Time to rest: stop, sit down, close your eyes", "The companion stays in place without changing your walking preference."),
         "waiting": ("A reminder that waits for you", "The screen stays covered until you respond."),
@@ -37,6 +38,7 @@ CAPTIONS = {
         "desktop": "예제 바탕 화면",
         "focus": ("집중하는 동안 토마토가 함께해요", "작업 50분, 그리고 휴식 10분."),
         "general": ("작업·휴식 시간과 자동 시작을 설정해요", "새 기본값은 작업 50분·휴식 10분이에요. Windows 자동 시작은 선택할 수 있어요."),
+        "character": ("좋아하는 컴패니언을 골라요", "기존 토마토와 민트색 앞치마 중에서 선택해요. 선택은 저장돼요."),
         "settings": ("알림을 원하는 모양으로 골라보세요", "테두리 빛 · 말풍선 · 상단 배너 · 반투명 덮개 · 전체 가림"),
         "break": ("휴식할 때는 멈춰 앉고 눈을 감아요", "걷기 설정을 바꾸지 않고 그 자리에서 쉬어요."),
         "waiting": ("응답할 때까지 기다리는 알림", "휴식이 끝나면 화면을 가린 채로 기다려요."),
@@ -138,15 +140,17 @@ def render(language, output, work, ffmpeg):
             return text["focus"]
         if frame < 90:
             return text["general"]
-        if frame < 162:
+        if frame < 144:
+            return text["character"]
+        if frame < 216:
             return text["settings"]
-        if frame < 204:
+        if frame < 258:
             return text["break"]
-        if frame < 234:
+        if frame < 288:
             return text["waiting"]
-        if frame < 264:
+        if frame < 318:
             return text["seated"]
-        return text["restart"] if frame < 312 else text["packages"]
+        return text["restart"] if frame < 366 else text["packages"]
 
     def draw_cursor(painter, frame):
         for screen, target in zip(screens, targets):
@@ -198,9 +202,10 @@ def render(language, output, work, ffmpeg):
             draw_widget(owner.pet)
         if owner.options and owner.options.isVisible():
             draw_widget(owner.options)
-            popup = owner.options.effect_options.style.view().window()
-            if popup.isVisible():
-                draw_widget(popup)
+            for combo in (owner.options.character, owner.options.effect_options.style):
+                popup = combo.view().window()
+                if popup.isVisible():
+                    draw_widget(popup)
         if owner.pet.menu.isVisible():
             draw_widget(owner.pet.menu)
         cue = owner.cues.windows.get(screen)
@@ -240,47 +245,58 @@ def render(language, output, work, ffmpeg):
                 click(checkbox, frame, QPoint(8, checkbox.height() // 2))
                 assert checkbox.isChecked() == (frame == 60)
                 assert bool(registry.value) == (frame == 60)
-            elif frame == 90:
+            elif frame in (90, 126):
+                click(owner.options.character, frame)
+            elif frame in (96, 132):
+                character = "classic" if frame == 96 else "sprout"
+                combo = owner.options.character
+                index = combo.model().index(combo.findData(character), 0)
+                combo.view().setCurrentIndex(index)
+                QTest.mouseMove(combo.view().viewport(), combo.view().visualRect(index).center())
+                click(combo.view().viewport(), frame, combo.view().visualRect(index).center())
+                assert owner.character == owner.pet.character == character, f"Expected {character}, selected {owner.character}"
+                assert owner.store.value("character") == character
+            elif frame == 144:
                 tabs = owner.options.tabs.tabBar()
                 click(tabs, frame, tabs.tabRect(1).center())
                 assert owner.options.tabs.currentIndex() == 1
-            elif frame in (96, 124, 147):
+            elif frame in (150, 178, 201):
                 click(owner.options.effect_options.style, frame)
-            elif frame in (102, 128, 151):
-                choose_style({102: "bubble", 128: "banner", 151: "cover"}[frame], frame)
-            elif frame in (106, 132):
+            elif frame in (156, 182, 205):
+                choose_style({156: "bubble", 182: "banner", 205: "cover"}[frame], frame)
+            elif frame in (160, 186):
                 click(owner.options.effect_options.preview, frame)
                 assert owner.cues.preview
-            elif frame in (120, 144):
+            elif frame in (174, 198):
                 click(owner.cues.windows[screens[0]].buttons["dismiss"], frame)
                 assert owner.cues.phase is None and owner.timer.phase == "work"
-            elif frame == 154:
+            elif frame == 208:
                 click(owner.options.close_button, frame)
                 assert owner.cue_settings["waiting"].style == "cover"
-            elif frame == 162:
+            elif frame == 216:
                 clock.now = owner.timer.deadline
                 owner.tick()
                 assert owner.timer.phase == "break"
                 rest_anchor = owner.pet.pos()
-            elif frame == 204:
+            elif frame == 258:
                 clock.now = owner.timer.deadline
                 owner.tick()
                 assert owner.timer.phase == "waiting" and owner.timer.deadline is None
-            elif frame == 234:
+            elif frame == 288:
                 click(owner.cues.windows[screens[1]].buttons["dismiss"], frame)
                 assert owner.cues.phase is None and owner.timer.phase == "waiting"
-            elif frame == 264:
+            elif frame == 318:
                 click(owner.pet.badge, frame)
                 assert owner.timer.phase == "work" and owner.timer.seconds == 3000
                 assert owner.cues.phase == "work" and owner.cues.effect.style == "edge"
-            if 204 <= frame < 264:
+            if 258 <= frame < 318:
                 assert owner.timer.phase == "waiting" and owner.timer.deadline is None
-            if frame == 246:
+            if frame == 300:
                 pointer_before_start = QPointF(pointer["point"])
-            if 246 <= frame < 264:
+            if 300 <= frame < 318:
                 button = owner.pet.badge
                 target = QPointF(button.mapToGlobal(button.rect().center()))
-                progress = (frame - 246) / 18
+                progress = (frame - 300) / 18
                 eased = progress * progress * (3 - 2 * progress)
                 pointer["point"] = pointer_before_start + (target - pointer_before_start) * eased
             if owner.cues.phase:
@@ -290,12 +306,12 @@ def render(language, output, work, ffmpeg):
                 elapsed = round((frame - cue_start) * 1000 / FPS)
                 owner.cues.animation.setCurrentTime(min(elapsed, owner.cues.animation.duration()))
             app.processEvents()
-            if 162 <= frame < 273:
+            if 216 <= frame < 327:
                 assert owner.pet.pos() == rest_anchor, "Rest/stand-up must remain anchored"
-            if frame in (162, 166, 172, 204, 234, 264, 268, 275):
+            if frame in (96, 132, 216, 220, 226, 258, 288, 318, 322, 329):
                 pose_receipt.append({"frame": frame, "phase": owner.timer.phase,
                                      "posture": owner.pet.posture.state, "amount": owner.pet.posture.amount,
-                                     "resting": owner.pet.resting})
+                                     "resting": owner.pet.resting, "character": owner.character})
 
             image = QImage(WIDTH, HEIGHT, QImage.Format.Format_RGB32)
             image.fill(QColor("#f6f5f0"))

@@ -11,8 +11,9 @@ from .posture import Posture
 
 
 class TimerPet(Pet):
-    def __init__(self, language, direction, pose_clock=None):
+    def __init__(self, language, direction, pose_clock=None, character="sprout"):
         self.posture = Posture(pose_clock)
+        self.character = character
         super().__init__(None, language, direction)
         self.resting = False
         self.setWindowTitle("Pawzura Pomodoro")
@@ -78,7 +79,7 @@ class TimerPet(Pet):
         walking = not (self.posture.stationary or self.pinned or self.pointer_active or self.hovered or self.reaction)
         draw_tomato(
             painter, self.phase, self.look_direction if self.hovered and not self.posture.stationary else self.direction,
-            walking, self.resting, self.reaction["kind"] if self.reaction else None, self.posture.amount,
+            walking, self.resting, self.reaction["kind"] if self.reaction else None, self.posture.amount, self.character,
         )
         painter.end()
 

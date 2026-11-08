@@ -16,7 +16,7 @@ Download either the **portable ZIP** or the **standalone EXE** from [Releases](h
 
 ![Demo of the walking companion, reminder settings and click-to-start cover](media/pomodoro-demo-0.1.0a3-en.gif)
 
-[Watch the MP4 demo](media/pomodoro-demo-0.1.0a3-en.mp4). The new 30-second alpha-3 demo shows sitting down, sleeping through a break, seated waiting and standing before walking, alongside 50/10 defaults, optional Windows startup and reminder controls using actual app widgets on two example desktops with an accelerated clock. [Demo details and regeneration](media/README.md).
+[Watch the MP4 demo](media/pomodoro-demo-0.1.0a3-en.mp4). The new 36-second alpha-3 demo shows choosing Classic or Mint apron tomato, sitting down, sleeping through a break, seated waiting and standing before walking, alongside 50/10 defaults, optional Windows startup and reminder controls using actual app widgets on two example desktops with an accelerated clock. [Demo details and regeneration](media/README.md).
 
 1. Use standard CPython 3.12+. With Python 3.14 installed, create the environment using `py -3.14 -m venv .venv-standard`. Run `.\.venv-standard\Scripts\python.exe -m pip install -r requirements.txt`, then open [run.bat](run.bat). You can also run `python -m pomodoro` in that environment.
 2. Click the timer badge to start, pause or resume. A break starts automatically when work ends. Click the badge again after the break to start the next work interval.
@@ -33,7 +33,9 @@ By default, work starts with a 1-second edge glow and breaks with a 3-second dim
 
 **Dismiss this effect** closes the current effect and cancels a pending reminder. **Turn effects off**, available on interactive effects and in both menus, also disables future effects. The timer continues. Timed effects allow clicks through, except the opaque cover, which has visible dismissal controls.
 
-During a break, the companion stops in place, sits down and closes its eyes. It stays seated with eyes open while waiting for the next work interval. Starting work makes it stand up before it walks again. Pausing a break keeps it asleep; your walking/pinned preference is preserved.
+**Options > General > Character** lets you choose **Classic tomato** or **Mint apron tomato** with a picture of each. The change applies immediately to the companion, tray icon and reminders, and is saved for the next launch. It keeps the timer and current posture. The classic drawing remains MIT; the mint-apron artwork has the separate terms shown below.
+
+During a break, either companion stops in place, sits down and closes its eyes. It stays seated with eyes open while waiting for the next work interval. Starting work makes it stand up before it walks again. Pausing a break keeps it asleep; your walking/pinned preference is preserved.
 
 Drag the companion to pin it. Turn **Let companion walk** back on to resume walking. Set the walking direction in Options, or choose **Bring companion back** to return it to the primary display.
 
