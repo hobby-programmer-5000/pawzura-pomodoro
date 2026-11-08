@@ -2,7 +2,7 @@
 
 # Component licenses
 
-Original app code, tomato artwork and demo composition use the repository's MIT license. [MIT](LICENSE).
+Original code and demo text/composition remain [MIT](LICENSE). The new designated mint-apron character, rendered icons and character portions of alpha-3 demos use **CC BY-NC-SA 4.0** for rights held by the licensor, with [separate ordinary paid-work app-use permission](CHARACTER-POLICY.md). [Asset register and attribution](ASSET-LICENSING.md) · [Unmodified CC legal text](licenses/CC-BY-NC-SA-4.0.txt). Earlier tomato art and demos retain their MIT grants; no blanket relicensing of code or third-party material applies.
 
 | Component | Version | License and source |
 | --- | --- | --- |
@@ -24,4 +24,4 @@ The app and Pawzura source remain MIT. No model weights, FFmpeg executable, Wind
 
 Design influences are recorded in [References and inspiration](INSPIRATION.md).
 
-The separate standalone EXE embeds the same dynamic runtime and notices and extracts them temporarily. Its LGPL compliance route supplies corresponding application code/build scripts and exact library source archives for recombination, as detailed in [BUILD](BUILD.md); the onedir ZIP continues to offer direct compatible-DLL replacement. **Options > Licenses** exposes notices and the exact build source in both formats. Original code/artwork remain MIT.
+The separate standalone EXE embeds the same dynamic runtime and notices and extracts them temporarily. Its LGPL compliance route supplies corresponding application code/build scripts and exact library source archives for recombination, as detailed in [BUILD](BUILD.md); the onedir ZIP continues to offer direct compatible-DLL replacement. **Options > Licenses** exposes notices and the exact build source in both formats. Original code and historical artwork remain MIT; newly designated artwork follows the asset register.

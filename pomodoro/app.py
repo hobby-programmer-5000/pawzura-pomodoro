@@ -19,7 +19,7 @@ TITLE = "Pawzura Pomodoro"
 
 
 class Companion:
-    def __init__(self, app, store, clock=None, show_tray=True, startup=None):
+    def __init__(self, app, store, clock=None, show_tray=True, startup=None, pose_clock=None):
         self.app = app
         self.store = store
         self.startup = startup
@@ -40,7 +40,7 @@ class Companion:
         self.cues = ScreenCues(app)
         self.cues.action_requested.connect(self.cue_action)
         self.options = None
-        self.pet = TimerPet(self.language, self.direction)
+        self.pet = TimerPet(self.language, self.direction, pose_clock)
         position = store.value("position")
         if not self.walking:
             saved = {"x": position.x(), "y": position.y()} if isinstance(position, QPoint) else None
@@ -152,6 +152,7 @@ class Companion:
         self.update_cue_text()
 
     def update_display(self):
+        self.pet.set_phase(self.timer.phase)
         display = self.countdown(), self.toggle_label()
         if display == self.last_display:
             return
@@ -159,7 +160,7 @@ class Companion:
         countdown, action = display
         self.actions["toggle"].setText(action)
         self.actions["reset"].setEnabled(self.timer.phase != "ready")
-        self.pet.set_countdown(self.countdown(compact=True), action, self.timer.phase == "break")
+        self.pet.set_countdown(self.countdown(compact=True), action)
         self.tray.setToolTip(f"{TITLE} · {countdown}")
         if self.options:
             self.options.update_timer(countdown, action)
@@ -177,6 +178,7 @@ class Companion:
 
     def handle_transition(self, phase):
         if phase:
+            self.pet.set_phase(self.timer.phase)
             self.remind_at = None
             self.cues.clear()
             if self.effects and phase in EVENTS:

@@ -32,7 +32,7 @@ def check(render_dir=None):
     probe = QSettings(QSettings.Format.IniFormat, QSettings.Scope.UserScope, "PawzuraPomodoro", "Desktop")
     previous_root = Path(probe.fileName()).parent.parent
     QSettings.setPath(QSettings.Format.IniFormat, QSettings.Scope.UserScope, str(folder / "profiles"))
-    now = [0.0]
+    now, pose_now = [0.0], [0.0]
     report = {"version": __version__, "frozen": bool(getattr(sys, "frozen", False)),
               "clock": "synthetic", "settings": "disposable INI", "checks": []}
     try:
@@ -58,7 +58,16 @@ def check(render_dir=None):
                 self.value = None
 
         startup = Startup(sys.executable, MemoryRunKey())
-        owner = Companion(app, store, lambda: now[0], show_tray=False, startup=startup)
+        owner = Companion(app, store, lambda: now[0], show_tray=False, startup=startup, pose_clock=lambda: pose_now[0])
+        owner.pet.timer.stop()
+
+        def pose_step(delta, expected, language, name):
+            pose_now[0] += delta
+            owner.pet.tick()
+            require(owner.pet.posture.state == expected, f"{language}: {name} posture")
+            app.processEvents()
+            if render_dir:
+                require(owner.pet.grab().save(str(render_dir / f"pet-{language}-{name}.png")), "Pet render")
         # This diagnostic drives widget actions directly, not OS pointer input.
         # Let real desktop clicks pass through its temporary test surfaces.
         owner.pet.setWindowFlag(Qt.WindowType.WindowTransparentForInput, True)
@@ -80,6 +89,8 @@ def check(render_dir=None):
         for language in ("en", "ko"):
             now[0] = 0.0
             owner.reset()
+            pose_now[0] += 1
+            owner.pet.tick()
             owner.set_language(language)
             owner.set_work(1)
             owner.set_rest(1)
@@ -92,9 +103,16 @@ def check(render_dir=None):
             now[0] = 60
             owner.tick()
             require(owner.timer.phase == "break", "Work to break")
+            anchor = owner.pet.pos()
+            pose_step(.3, "sitting_down", language, "sitting")
+            require(owner.pet.pos() == anchor, "Sit anchored")
+            pose_step(.4, "seated", language, "sleeping")
+            require(owner.pet.resting and owner.pet.pos() == anchor, "Sleeping anchored")
             now[0] = 120
             owner.tick()
             require(owner.timer.phase == "waiting" and owner.timer.deadline is None, "Explicit restart")
+            pose_step(1, "seated", language, "waiting")
+            require(not owner.pet.resting and owner.pet.pos() == anchor, "Waiting seated with normal expression")
             owner.set_cue("work", "edge", "timed", 1, True)
             owner.set_cue("waiting", "edge", "click", 2, True)
             owner.set_effects(False)
@@ -132,6 +150,9 @@ def check(render_dir=None):
             old_start = next(iter(owner.cues.windows.values())).callbacks["start"]
             next(iter(owner.cues.windows.values())).buttons["start"].click()
             require(owner.timer.phase == "work" and owner.timer.seconds == 60, "Confirm work")
+            pose_step(.3, "standing_up", language, "rising")
+            require(owner.pet.pos() == anchor, "Stand before travel")
+            pose_step(.5, "standing", language, "standing")
             owner.reset()
             old_start()
             require(owner.timer.phase == "ready", "Stale action rejected")
@@ -162,7 +183,7 @@ def check(render_dir=None):
             owner.set_work(1)
             owner.set_rest(1)
             owner.options.close()
-            report["checks"].append(f"{language}: cycle, pause/resume, five previews, all-screen button layout, confirm, cancellation, options")
+            report["checks"].append(f"{language}: cycle, pause/resume, anchored sit/sleep/wait/rise, five previews, all-screen button layout, confirm, cancellation, options")
         disk = create_settings(frozen=True)
         require(disk.value("language") == "ko" and disk.value("work", type=int) == 1, "Persistence")
         require(disk.status() == QSettings.Status.NoError, "Settings status")

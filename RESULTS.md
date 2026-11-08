@@ -25,3 +25,11 @@ Known observation: after settings-file access was restored, disk writes succeede
 Raw screenshots, profiles and logs remain local. Portable build procedures are in [BUILD](BUILD.md); release notes identify the exact binary's validation. These Windows 11 source-session results do not replace a separate Windows 11 check of the frozen EXE.
 
 [Test scenarios](TESTING.md) · [Project README](README.md)
+
+## Alpha 3 checks on Windows 10
+
+The 0.1.0a3 source update was checked on native Windows 10 x64 build 19045 with standard CPython 3.14.7 and PySide6/Shiboken 6.12.0: **30 unittest tests passed with no skips**. Added coverage checks stationary sit/sleep/wait/rise, standing before travel, pause/pin/reset/rapid reversal, dragging while seated, bounded art validation and rendered eye/gait behavior. The disposable-profile native diagnostic passed in English/Korean on three connected screens, including pet/options/button renders. These are widget-driven checks, not a repeat of every manual Windows 11 or hardware case.
+
+All four new GIF/MP4 demos passed complete decoding: 360 frames, 1280 × 800, 30 seconds each. Encoded sit/sleep/wait/rise scenes and captions were visually inspected in both languages. Wheels were inspected for exact new artwork bytes and all six license/policy files. A restricted-runner wheel cleanup failed with Windows access denied; the native build and inventory passed. The new offline document check validates links and artwork/license/media hashes.
+
+Release-specific frozen checks are recorded with the exact release artifacts. Windows 11 frozen execution, hardware hot-plug/mixed-DPI posture transitions and live OS pointer behavior still need itemized manual evidence; historical alpha-1 results above do not establish those alpha-3 results.

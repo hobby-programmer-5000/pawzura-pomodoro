@@ -14,9 +14,9 @@
 
 [Windows 11 수동 테스트 시나리오](TESTING.ko.md).
 
-![컴패니언 걷기, 알림 설정, 클릭해서 작업을 시작하는 화면 데모](media/pomodoro-demo-0.1.0a2-ko.gif)
+![컴패니언 걷기, 알림 설정, 클릭해서 작업을 시작하는 화면 데모](media/pomodoro-demo-0.1.0a3-ko.gif)
 
-[MP4 데모 보기](media/pomodoro-demo-0.1.0a2-ko.mp4). 새 30초 알파 2 데모는 50/10 기본값, Windows 자동 시작 옵션, 알림 설정과 명시적 작업 재시작을 실제 앱 화면으로 보여줘요. 두 예제 바탕 화면과 가속 시계를 사용해요. [데모 설명과 다시 만들기](media/README.ko.md).
+[MP4 데모 보기](media/pomodoro-demo-0.1.0a3-ko.mp4). 새 30초 알파 3 데모는 앉기·휴식 중 눈 감기·앉아서 대기·일어난 뒤 걷기와 50/10 기본값, Windows 자동 시작 옵션, 알림 설정을 실제 앱 화면으로 보여줘요. 두 예제 바탕 화면과 가속 시계를 사용해요. [데모 설명과 다시 만들기](media/README.ko.md).
 
 1. 표준 CPython 3.12 이상을 사용해요. Python 3.14가 있다면 `py -3.14 -m venv .venv-standard`로 환경을 만들고 `.\.venv-standard\Scripts\python.exe -m pip install -r requirements.txt`를 실행한 뒤 [run.bat](run.bat)을 열어요. 같은 환경에서 `python -m pomodoro`로도 실행할 수 있어요.
 2. 타이머 표시를 클릭해서 시작, 일시정지, 재개해요. 작업이 끝나면 휴식이 자동으로 시작돼요. 휴식이 끝난 뒤 타이머 표시를 다시 클릭하면 다음 작업이 시작돼요.
@@ -33,9 +33,11 @@
 
 **이번 효과 닫기**를 누르면 현재 효과와 예약된 다시 알림이 취소돼요. 클릭 가능한 효과와 두 메뉴의 **시각 효과 끄기**는 이후 효과도 꺼요. 타이머는 계속 작동해요. 몇 초 동안 표시하는 효과는 마우스 클릭이 통과하며, 화면 전체 가림에는 직접 닫을 수 있는 버튼이 표시돼요.
 
+휴식이 시작되면 그 자리에서 멈춰 앉고 눈을 감아요. 휴식이 끝나도 눈을 뜬 채 앉아서 기다려요. 작업을 시작하면 먼저 일어난 뒤 걸어요. 휴식을 일시정지해도 쉬는 자세를 유지하고 걷기·고정 설정은 보존해요.
+
 컴패니언을 드래그하면 그 자리에 고정돼요. **컴패니언 걷기**를 다시 켜면 걷기 시작해요. 옵션에서 걷는 방향을 바꾸거나 **컴패니언 제자리로**를 선택해 주 모니터로 옮길 수 있어요.
 
-직접 그린 토마토와 타이머 코드에는 저장소의 [MIT 라이선스](LICENSE)가 적용돼요. 이동과 드래그는 Pawzura의 컴패니언 조작 코드를 재사용해요. 런타임은 기존 PySide6 Essentials 및 Shiboken 6.12.0을 사용해요. LGPL 조건과 배포 의무는 [외부 구성요소 고지](THIRD-PARTY-NOTICES.ko.md)를, 화면 제어 아이디어는 [참고 및 영감](INSPIRATION.ko.md)을 참고하세요.
+코드는 [MIT](LICENSE)를 유지해요. 새 민트색 앞치마 캐릭터는 **CC BY-NC-SA 4.0**이며 일반적인 유료 업무 중 앱 사용은 별도 허용해요. 캐릭터 상품·브랜딩·캐릭터 자체의 상업적 이용은 별도 허락이 필요해요. 이전 MIT 토마토의 기존 허락은 유지돼요. [캐릭터 정책](CHARACTER-POLICY.ko.md)과 [정확한 자산 등록부](ASSET-LICENSING.ko.md)를 확인하세요. 이동과 드래그는 Pawzura의 컴패니언 조작 코드를 재사용해요. 런타임은 기존 PySide6 Essentials 및 Shiboken 6.12.0을 사용해요. LGPL 조건과 배포 의무는 [외부 구성요소 고지](THIRD-PARTY-NOTICES.ko.md)를, 화면 제어 아이디어는 [참고 및 영감](INSPIRATION.ko.md)을 참고하세요.
 
 Pawzura 이동 코드는 [커밋 23bd3b9](https://github.com/hobby-programmer-5000/pawzura/blob/23bd3b90435d6e5ab6c0dd510d8dc5b8897489a6/pawzura/pet.py)과 requirements.txt의 압축 파일 SHA256에 고정돼 있어요. 공개 소스 압축 파일에서 패키지를 설치해요.
 

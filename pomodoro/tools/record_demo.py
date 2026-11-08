@@ -24,9 +24,10 @@ CAPTIONS = {
         "focus": ("A little company while you focus", "50 minutes of work, then a 10-minute break."),
         "general": ("Choose your timing and Windows startup", "Fresh defaults: 50 minutes of work, 10 minutes of rest. Startup is optional."),
         "settings": ("Choose how you want to be reminded", "Edge glow · Companion bubble · Top banner · Dim screen · Cover screen"),
-        "break": ("A break starts when work ends", "The reminder appears on both displays."),
+        "break": ("Time to rest: stop, sit down, close your eyes", "The companion stays in place without changing your walking preference."),
         "waiting": ("A reminder that waits for you", "The screen stays covered until you respond."),
-        "restart": ("Click Start work on either display", "Both screens clear. A fresh 50-minute session begins."),
+        "seated": ("Still seated until you start work", "Dismiss the effect to see the companion. The timer is still waiting."),
+        "restart": ("Start work: stand up, then walk", "A fresh 50-minute session begins. Pinned companions stay pinned."),
         "packages": ("Choose the ZIP or a standalone EXE", "Both formats run without installing Python."),
     },
     "ko": {
@@ -37,9 +38,10 @@ CAPTIONS = {
         "focus": ("집중하는 동안 토마토가 함께해요", "작업 50분, 그리고 휴식 10분."),
         "general": ("작업·휴식 시간과 자동 시작을 설정해요", "새 기본값은 작업 50분·휴식 10분이에요. Windows 자동 시작은 선택할 수 있어요."),
         "settings": ("알림을 원하는 모양으로 골라보세요", "테두리 빛 · 말풍선 · 상단 배너 · 반투명 덮개 · 전체 가림"),
-        "break": ("작업이 끝나면 휴식이 시작돼요", "두 모니터에 함께 알려줘요."),
+        "break": ("휴식할 때는 멈춰 앉고 눈을 감아요", "걷기 설정을 바꾸지 않고 그 자리에서 쉬어요."),
         "waiting": ("응답할 때까지 기다리는 알림", "휴식이 끝나면 화면을 가린 채로 기다려요."),
-        "restart": ("어느 모니터에서든 작업 시작을 눌러요", "모든 화면이 열리고, 새로운 50분이 시작돼요."),
+        "seated": ("작업 시작을 누를 때까지 앉아 기다려요", "효과를 닫아도 타이머는 기다려요. 컴패니언을 확인해 보세요."),
+        "restart": ("작업을 시작하면 일어난 뒤 걸어요", "새로운 50분이 시작돼요. 고정 상태라면 그대로 머물러요."),
         "packages": ("ZIP과 단일 EXE 중에서 선택해요", "두 배포본 모두 Python 설치 없이 실행할 수 있어요."),
     },
 }
@@ -80,7 +82,7 @@ def render(language, output, work, ffmpeg):
     if family not in QFontDatabase.families():
         raise RuntimeError(f"The demo needs the installed Windows font {family}.")
     app.setFont(QFont(family, 9))
-    clock = Clock()
+    clock, pose_clock = Clock(), Clock()
     class MemoryRunKey:
         value = None
 
@@ -96,12 +98,15 @@ def render(language, output, work, ffmpeg):
     registry = MemoryRunKey()
     startup = Startup(sys.executable, registry)
     owner = Companion(app, QSettings(str(work / "demo.ini"), QSettings.Format.IniFormat), clock,
-                      show_tray=False, startup=startup)
+                      show_tray=False, startup=startup, pose_clock=pose_clock)
     assert (owner.timer.work, owner.timer.rest) == (50, 10) and registry.value is None
     owner.set_language(language)
     owner.poll.stop()
     owner.pet.timer.stop()
     owner.pet.next_idle = float("inf")
+    owner.pet.place_at(QPointF(80, 334))
+    pose_receipt = []
+    rest_anchor = None
     screens = sorted(app.screens(), key=lambda screen: screen.geometry().x())
     assert len(screens) == 2 and screens[0].geometry().getRect() == (0, 0, 800, 480)
     text = CAPTIONS[language]
@@ -137,8 +142,10 @@ def render(language, output, work, ffmpeg):
             return text["settings"]
         if frame < 204:
             return text["break"]
-        if frame < 264:
+        if frame < 234:
             return text["waiting"]
+        if frame < 264:
+            return text["seated"]
         return text["restart"] if frame < 312 else text["packages"]
 
     def draw_cursor(painter, frame):
@@ -205,6 +212,7 @@ def render(language, output, work, ffmpeg):
     try:
         for frame in range(FPS * SECONDS):
             clock.now += 1 / FPS
+            pose_clock.now = frame / FPS
             owner.pet.last_tick = time.monotonic() - 1 / FPS
             owner.pet.tick()
             owner.tick()
@@ -253,12 +261,16 @@ def render(language, output, work, ffmpeg):
                 clock.now = owner.timer.deadline
                 owner.tick()
                 assert owner.timer.phase == "break"
+                rest_anchor = owner.pet.pos()
             elif frame == 204:
                 clock.now = owner.timer.deadline
                 owner.tick()
                 assert owner.timer.phase == "waiting" and owner.timer.deadline is None
+            elif frame == 234:
+                click(owner.cues.windows[screens[1]].buttons["dismiss"], frame)
+                assert owner.cues.phase is None and owner.timer.phase == "waiting"
             elif frame == 264:
-                click(owner.cues.windows[screens[1]].buttons["start"], frame)
+                click(owner.pet.badge, frame)
                 assert owner.timer.phase == "work" and owner.timer.seconds == 3000
                 assert owner.cues.phase == "work" and owner.cues.effect.style == "edge"
             if 204 <= frame < 264:
@@ -266,7 +278,7 @@ def render(language, output, work, ffmpeg):
             if frame == 246:
                 pointer_before_start = QPointF(pointer["point"])
             if 246 <= frame < 264:
-                button = owner.cues.windows[screens[1]].buttons["start"]
+                button = owner.pet.badge
                 target = QPointF(button.mapToGlobal(button.rect().center()))
                 progress = (frame - 246) / 18
                 eased = progress * progress * (3 - 2 * progress)
@@ -278,6 +290,12 @@ def render(language, output, work, ffmpeg):
                 elapsed = round((frame - cue_start) * 1000 / FPS)
                 owner.cues.animation.setCurrentTime(min(elapsed, owner.cues.animation.duration()))
             app.processEvents()
+            if 162 <= frame < 273:
+                assert owner.pet.pos() == rest_anchor, "Rest/stand-up must remain anchored"
+            if frame in (162, 166, 172, 204, 234, 264, 268, 275):
+                pose_receipt.append({"frame": frame, "phase": owner.timer.phase,
+                                     "posture": owner.pet.posture.state, "amount": owner.pet.posture.amount,
+                                     "resting": owner.pet.resting})
 
             image = QImage(WIDTH, HEIGHT, QImage.Format.Format_RGB32)
             image.fill(QColor("#f6f5f0"))
@@ -301,6 +319,9 @@ def render(language, output, work, ffmpeg):
                 painter.setBrush(Qt.BrushStyle.NoBrush)
                 painter.drawRect(target)
             draw_cursor(painter, frame)
+            # An enlarged view of the actual widget makes the posture visible
+            # even while an all-monitor reminder is in front of the desktop.
+            painter.drawImage(QRectF(984, 474, 144, 146), owner.pet.grab().toImage())
             title, detail = caption(frame)
             font = QFont(family, 22)
             font.setBold(True)
@@ -314,6 +335,7 @@ def render(language, output, work, ffmpeg):
             assert image.save(str(frames / f"frame-{frame:04}.png"))
         assert owner.timer.phase == "work" and owner.cues.phase is None
         assert registry.value is None
+        (work / "pose-receipt.json").write_text(json.dumps(pose_receipt, indent=2) + "\n", encoding="utf-8")
     finally:
         if owner.options:
             owner.options.close()

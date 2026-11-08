@@ -10,7 +10,24 @@ ROOT = Path(__file__).resolve().parent.parent
 DOCS = ("LICENSE", "README.md", "README.ko.md", "BUILD.md", "BUILD.ko.md",
         "RESULTS.md", "RESULTS.ko.md", "TESTING.md", "TESTING.ko.md",
         "INSPIRATION.md", "INSPIRATION.ko.md", "CONTRIBUTORS.md", "CONTRIBUTORS.ko.md",
-        "THIRD-PARTY-NOTICES.md", "THIRD-PARTY-NOTICES.ko.md")
+        "THIRD-PARTY-NOTICES.md", "THIRD-PARTY-NOTICES.ko.md",
+        "CHARACTER-POLICY.md", "CHARACTER-POLICY.ko.md", "ASSET-LICENSING.md", "ASSET-LICENSING.ko.md")
+
+ART = "pomodoro/art/sprout-tomato-v1.json"
+
+
+def check_art(info, read):
+    expected = info.get("art_sha256", {})
+    if ART not in expected:
+        raise ValueError("Missing character inventory")
+    for name, hashed in expected.items():
+        if digest(ROOT / name) != hashed or hashlib.sha256(read(name)).hexdigest() != hashed:
+            raise ValueError(f"Character payload mismatch: {name}")
+    if json.loads(read(ART))["license"] != "CC-BY-NC-SA-4.0":
+        raise ValueError("Wrong character license")
+    for name in ("CHARACTER-POLICY.md", "ASSET-LICENSING.md", "licenses/CC-BY-NC-SA-4.0.txt"):
+        if hashlib.sha256(read(name)).hexdigest() != digest(ROOT / name):
+            raise ValueError(f"Character notice mismatch: {name}")
 
 
 def digest(path):
@@ -69,6 +86,7 @@ def check_single(executable):
         if name not in manifest:
             raise ValueError(f"Missing embedded notice: {name}")
     check_code(executable, info)
+    check_art(info, lambda name: archive.extract(names[name]))
     return {"status": "PASS", "version": info["version"], "commit": info["commit"],
             "payload_files": len(manifest), "embedded_source_checked": True}
 
@@ -117,6 +135,7 @@ def check(folder, *, embedded=False):
             raise ValueError("Distribution file manifest mismatch")
     if embedded:
         check_code(folder / "PawzuraPomodoro.exe", info)
+    check_art(info, lambda name: ((folder / "_internal" / name) if name.startswith("pomodoro/") else (folder / name)).read_bytes())
     return {"status": "PASS", "files": len(paths), "version": info["version"],
             "commit": info["commit"], "embedded_source_checked": embedded}
 

@@ -5,3 +5,5 @@
 **hobby-programmer-5000** owns the product direction, feature choices and testing/release decisions. The user specified the desktop companion, work/break timing, configurable all-monitor reminders, bilingual interface and privacy requirements.
 
 **ChatGPT (Codex)** assisted with implementation, original tomato drawing, tests, demonstration media and documentation under the user's direction. It is an AI tool. Git commits use the established public contributor identities.
+
+The alpha-3 mint-apron character is AI-assisted procedural vector data implemented by ChatGPT/Codex under the user’s direction, not claimed as a hand-drawn human work. Human ownership/authority extends only to rights actually held; see the [asset record](ASSET-LICENSING.md).

@@ -97,6 +97,7 @@ def main(dist_dir, *, single_exe=False, tool=None, thumbprint=None, signing_requ
     args = [sys.executable, "-m", "PyInstaller", "--clean", "--onedir", "--windowed", "--noupx",
             "--name", NAME, "--icon", str(icon), "--version-file", str(version_file),
             "--manifest", str(manifest_file), "--specpath", str(work),
+            "--add-data", str(ROOT / "pomodoro/art") + ";pomodoro/art",
             "--distpath", str(dist_dir), "--workpath", str(work / "pyinstaller"), str(ROOT / "run.py")]
     subprocess.run(args, cwd=ROOT, env=environment, check=True)
     output = dist_dir / NAME
@@ -133,6 +134,7 @@ def main(dist_dir, *, single_exe=False, tool=None, thumbprint=None, signing_requ
             "qt": "6.12.0", "mode": "onedir/dynamic Qt", "modified_upstream": modified_runtime,
             "msvc_runtime_unified": True, "dependencies": dependencies, "source_sha256": sources}
     info["signature"] = signature
+    info["art_sha256"] = {p.relative_to(ROOT).as_posix(): digest(p) for p in (ROOT / "pomodoro/art").iterdir() if p.is_file()}
     (output / "BUILD-INFO.json").write_text(json.dumps(info, indent=2) + "\n", encoding="utf-8")
     validation = check(output, embedded=True)
     smoke = work / "frozen-smoke.json"

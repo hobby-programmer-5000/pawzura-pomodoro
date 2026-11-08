@@ -1,0 +1,681 @@
+{
+  "schema": 1,
+  "id": "sprout-tomato-v1",
+  "title": "Sprout Tomato — mint apron edition",
+  "license": "CC-BY-NC-SA-4.0",
+  "credit": "hobby-programmer-5000; AI-assisted vector artwork with ChatGPT/Codex",
+  "palette": {
+    "outline": "#4b3447",
+    "skin_top": "#ff9b80",
+    "skin_bottom": "#dc455c",
+    "shine": "#ffd5b5",
+    "leaf": "#70bf97",
+    "leaf_dark": "#365f55",
+    "apron": "#9bd9c4",
+    "pocket": "#fff1c3",
+    "boot": "#596d72",
+    "face": "#483043",
+    "cheek": "#ffb1a6"
+  },
+  "gradient": [
+    34,
+    42,
+    111,
+    137
+  ],
+  "layers": [
+    {
+      "name": "left_leg",
+      "kind": "line",
+      "role": "left_foot",
+      "stroke": "outline",
+      "width": 5,
+      "standing": [
+        53,
+        116,
+        50,
+        136
+      ],
+      "seated": [
+        50,
+        125,
+        36,
+        137
+      ]
+    },
+    {
+      "name": "right_leg",
+      "kind": "line",
+      "role": "right_foot",
+      "stroke": "outline",
+      "width": 5,
+      "standing": [
+        92,
+        116,
+        95,
+        136
+      ],
+      "seated": [
+        96,
+        125,
+        109,
+        137
+      ]
+    },
+    {
+      "name": "left_boot",
+      "kind": "ellipse",
+      "role": "left_foot",
+      "fill": "boot",
+      "stroke": "outline",
+      "width": 2,
+      "standing": [
+        37,
+        131,
+        27,
+        11
+      ],
+      "seated": [
+        22,
+        132,
+        32,
+        11
+      ]
+    },
+    {
+      "name": "right_boot",
+      "kind": "ellipse",
+      "role": "right_foot",
+      "fill": "boot",
+      "stroke": "outline",
+      "width": 2,
+      "standing": [
+        82,
+        131,
+        27,
+        11
+      ],
+      "seated": [
+        93,
+        132,
+        32,
+        11
+      ]
+    },
+    {
+      "name": "left_arm",
+      "kind": "line",
+      "role": "left_arm",
+      "stroke": "outline",
+      "width": 6,
+      "standing": [
+        30,
+        86,
+        17,
+        105
+      ],
+      "seated": [
+        29,
+        109,
+        22,
+        124
+      ]
+    },
+    {
+      "name": "right_arm",
+      "kind": "line",
+      "role": "right_arm",
+      "stroke": "outline",
+      "width": 6,
+      "standing": [
+        114,
+        86,
+        128,
+        103
+      ],
+      "seated": [
+        115,
+        109,
+        123,
+        124
+      ]
+    },
+    {
+      "name": "body",
+      "kind": "path",
+      "fill": [
+        "skin_top",
+        "skin_bottom"
+      ],
+      "stroke": "outline",
+      "width": 3,
+      "standing": [
+        [
+          "M",
+          72,
+          47
+        ],
+        [
+          "C",
+          52,
+          28,
+          24,
+          40,
+          23,
+          75
+        ],
+        [
+          "C",
+          18,
+          105,
+          39,
+          126,
+          72,
+          123
+        ],
+        [
+          "C",
+          105,
+          127,
+          127,
+          104,
+          121,
+          74
+        ],
+        [
+          "C",
+          121,
+          43,
+          95,
+          29,
+          72,
+          47
+        ],
+        [
+          "Z"
+        ]
+      ],
+      "seated": [
+        [
+          "M",
+          72,
+          70
+        ],
+        [
+          "C",
+          48,
+          51,
+          20,
+          66,
+          20,
+          96
+        ],
+        [
+          "C",
+          17,
+          122,
+          40,
+          141,
+          72,
+          136
+        ],
+        [
+          "C",
+          106,
+          141,
+          129,
+          121,
+          124,
+          95
+        ],
+        [
+          "C",
+          124,
+          67,
+          97,
+          51,
+          72,
+          70
+        ],
+        [
+          "Z"
+        ]
+      ]
+    },
+    {
+      "name": "glint",
+      "kind": "ellipse",
+      "fill": "shine",
+      "standing": [
+        33,
+        62,
+        10,
+        17
+      ],
+      "seated": [
+        31,
+        83,
+        10,
+        14
+      ]
+    },
+    {
+      "name": "apron",
+      "kind": "path",
+      "fill": "apron",
+      "stroke": "leaf_dark",
+      "width": 2,
+      "standing": [
+        [
+          "M",
+          33,
+          100
+        ],
+        [
+          "C",
+          56,
+          115,
+          92,
+          115,
+          113,
+          99
+        ],
+        [
+          "L",
+          105,
+          117
+        ],
+        [
+          "C",
+          84,
+          131,
+          58,
+          131,
+          40,
+          116
+        ],
+        [
+          "Z"
+        ]
+      ],
+      "seated": [
+        [
+          "M",
+          30,
+          116
+        ],
+        [
+          "C",
+          53,
+          127,
+          95,
+          127,
+          116,
+          115
+        ],
+        [
+          "L",
+          106,
+          131
+        ],
+        [
+          "C",
+          85,
+          142,
+          57,
+          142,
+          39,
+          130
+        ],
+        [
+          "Z"
+        ]
+      ]
+    },
+    {
+      "name": "pocket",
+      "kind": "path",
+      "fill": "pocket",
+      "stroke": "leaf_dark",
+      "width": 1.5,
+      "standing": [
+        [
+          "M",
+          61,
+          112
+        ],
+        [
+          "L",
+          84,
+          112
+        ],
+        [
+          "L",
+          82,
+          122
+        ],
+        [
+          "C",
+          76,
+          127,
+          68,
+          127,
+          63,
+          121
+        ],
+        [
+          "Z"
+        ]
+      ],
+      "seated": [
+        [
+          "M",
+          61,
+          127
+        ],
+        [
+          "L",
+          84,
+          127
+        ],
+        [
+          "L",
+          82,
+          135
+        ],
+        [
+          "C",
+          76,
+          140,
+          68,
+          140,
+          63,
+          135
+        ],
+        [
+          "Z"
+        ]
+      ]
+    },
+    {
+      "name": "crown",
+      "kind": "path",
+      "fill": "leaf",
+      "stroke": "leaf_dark",
+      "width": 2.5,
+      "standing": [
+        [
+          "M",
+          69,
+          52
+        ],
+        [
+          "C",
+          49,
+          54,
+          35,
+          47,
+          33,
+          38
+        ],
+        [
+          "C",
+          49,
+          33,
+          62,
+          38,
+          69,
+          45
+        ],
+        [
+          "C",
+          62,
+          29,
+          69,
+          22,
+          78,
+          23
+        ],
+        [
+          "C",
+          83,
+          33,
+          79,
+          39,
+          76,
+          46
+        ],
+        [
+          "C",
+          88,
+          32,
+          106,
+          34,
+          113,
+          42
+        ],
+        [
+          "C",
+          109,
+          54,
+          91,
+          56,
+          78,
+          53
+        ],
+        [
+          "C",
+          82,
+          63,
+          71,
+          68,
+          61,
+          66
+        ],
+        [
+          "C",
+          59,
+          59,
+          62,
+          55,
+          69,
+          52
+        ],
+        [
+          "Z"
+        ]
+      ],
+      "seated": [
+        [
+          "M",
+          69,
+          75
+        ],
+        [
+          "C",
+          49,
+          77,
+          35,
+          70,
+          33,
+          61
+        ],
+        [
+          "C",
+          49,
+          56,
+          62,
+          61,
+          69,
+          68
+        ],
+        [
+          "C",
+          62,
+          52,
+          69,
+          45,
+          78,
+          46
+        ],
+        [
+          "C",
+          83,
+          56,
+          79,
+          62,
+          76,
+          69
+        ],
+        [
+          "C",
+          88,
+          55,
+          106,
+          57,
+          113,
+          65
+        ],
+        [
+          "C",
+          109,
+          77,
+          91,
+          79,
+          78,
+          76
+        ],
+        [
+          "C",
+          82,
+          86,
+          71,
+          91,
+          61,
+          89
+        ],
+        [
+          "C",
+          59,
+          82,
+          62,
+          78,
+          69,
+          75
+        ],
+        [
+          "Z"
+        ]
+      ]
+    },
+    {
+      "name": "left_cheek",
+      "kind": "ellipse",
+      "fill": "cheek",
+      "standing": [
+        39,
+        91,
+        16,
+        7
+      ],
+      "seated": [
+        37,
+        112,
+        16,
+        7
+      ]
+    },
+    {
+      "name": "right_cheek",
+      "kind": "ellipse",
+      "fill": "cheek",
+      "standing": [
+        91,
+        91,
+        16,
+        7
+      ],
+      "seated": [
+        93,
+        112,
+        16,
+        7
+      ]
+    },
+    {
+      "name": "left_eye",
+      "kind": "ellipse",
+      "role": "eye",
+      "fill": "face",
+      "standing": [
+        54,
+        77,
+        8,
+        11
+      ],
+      "seated": [
+        53,
+        99,
+        8,
+        10
+      ]
+    },
+    {
+      "name": "right_eye",
+      "kind": "ellipse",
+      "role": "eye",
+      "fill": "face",
+      "standing": [
+        85,
+        77,
+        8,
+        11
+      ],
+      "seated": [
+        86,
+        99,
+        8,
+        10
+      ]
+    },
+    {
+      "name": "smile",
+      "kind": "path",
+      "stroke": "face",
+      "width": 2.8,
+      "standing": [
+        [
+          "M",
+          66,
+          91
+        ],
+        [
+          "C",
+          69,
+          99,
+          78,
+          99,
+          81,
+          91
+        ]
+      ],
+      "seated": [
+        [
+          "M",
+          66,
+          112
+        ],
+        [
+          "C",
+          69,
+          119,
+          78,
+          119,
+          81,
+          112
+        ]
+      ]
+    }
+  ],
+  "notice": "ASSET-LICENSING.md; CHARACTER-POLICY.md (supplemental work-use permission)"
+}
